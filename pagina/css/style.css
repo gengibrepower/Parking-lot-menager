@@ -1,0 +1,46 @@
+/* 
+Light (300)
+
+Regular (400)
+
+Medium (500)
+
+Bold (700) 
+*/
+@font-face {
+    font-family: "BL Melody";
+    src: url("fonts/BLMelody-Regular.woff2") format("woff2");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "BL Melody";
+    src: url("fonts/BLMelody-Light.woff2") format("woff2");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "BL Melody";
+    src: url("fonts/BLMelody-Medium.woff2") format("woff2");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "BL Melody";
+    src: url("fonts/BLMelody-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "BL Melody";
+    src: url("fonts/BLMelody-Bold.woff2") format("woff2");
+    font-weight: 700;
+}
+
+:root{
+    --preto: #0A0A0A;
+    --rosa: #FF7A80;
+    --rosa_hover: #FF5F66;
+    --branco: #FFFFFF;
+    --cinza: #B3B3B3;
+}
