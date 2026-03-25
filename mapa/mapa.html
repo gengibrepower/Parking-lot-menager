@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeamento de Vagas - PUCPR</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; }
+        #map { width: 100%; height: 100vh; background-color: #1a1a1a; }
+        
+        /* Painel flutuante para facilitar a cópia do JSON */
+        #painel {
+            position: absolute; top: 15px; right: 15px; z-index: 1000;
+            background: rgba(255,255,255,0.95); padding: 15px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 320px;
+        }
+        #painel h3 { margin: 0 0 10px 0; font-size: 16px; color: #333; }
+        #json-output { 
+            width: 100%; height: 150px; resize: vertical; margin-bottom: 10px; 
+            font-family: monospace; font-size: 11px; padding: 5px; box-sizing: border-box;
+            background: #f8f9fa; border: 1px solid #ddd;
+        }
+        button { 
+            padding: 8px 15px; cursor: pointer; border: none; 
+            color: white; border-radius: 4px; font-weight: bold; width: 100%; margin-bottom: 5px;
+        }
+        button:hover { filter: brightness(0.9); }
+        .btn-add { background: #2ecc71; }
+        .btn-analisar { background: #3498db; }
+        .btn-limpar { background: #e74c3c; }
+        
+        .active-mode {
+            box-shadow: 0 0 0 3px #111;
+            transform: scale(0.98);
+        }
+        
+        .help-text { font-size: 12px; color: #555; margin-bottom: 10px; line-height: 1.4; }
+        
+        .grid-label {
+            color: #fff;
+            font-size: 10px;
+            text-shadow: 1px 1px 2px #000;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        
+        .inputs-tamanho {
+            display: flex; gap: 10px; margin-bottom: 10px;
+            background: #eee; padding: 8px; border-radius: 4px; border: 1px solid #ccc;
+        }
+        .inputs-tamanho label { font-size: 12px; display: block; font-weight: bold; margin-bottom: 2px;}
+        .inputs-tamanho input { width: 100%; padding: 4px; border: 1px solid #aaa; border-radius: 4px; box-sizing: border-box;}
+    </style>
+</head>
+<body>
+
+<div id="painel">
+    <h3>Ferramenta de Mapeamento</h3>
+    
+    <button id="btn-add" class="btn-add" onclick="setModo('adicionar')">Modo: Adicionar Vagas</button>
+    <button id="btn-analisar" class="btn-analisar" onclick="setModo('analisar')">Modo: Analisar Vagas</button>
+    
+    <div id="help-add" class="help-text" style="display: none;">
+        <b>Como usar (Adicionar):</b><br>
+        Clique no mapa para adicionar uma vaga. A vaga será criada a partir do ponto clicado com o tamanho padrão baixo:
+        <div class="inputs-tamanho" style="margin-top: 5px;">
+            <div style="flex: 1;">
+                <label>Largura (X)</label>
+                <input type="number" id="vaga-largura" value="40">
+            </div>
+            <div style="flex: 1;">
+                <label>Altura (Y)</label>
+                <input type="number" id="vaga-altura" value="80">
+            </div>
+        </div>
+    </div>
+    <div id="help-analisar" class="help-text" style="display: none;">
+        <b>Como usar (Analisar):</b><br>
+        Clique em uma vaga existente para ver suas informações no popup (ID, Coords, Status).
+    </div>
+
+    <textarea id="json-output" placeholder="[ Os objetos JSON aparecerão aqui... ]"></textarea>
+    <button class="btn-limpar" onclick="limparPainel()">Limpar e Reiniciar JSON</button>
+</div>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // É importante usar as dimensões base da sua imagem. Aqui usamos 1000x1500 px.
+    // Lembrete: formato de bounds no Leaflet é: [ [y_min, x_min], [y_max, x_max] ]
+    var imageBounds = [[0, 0], [1500, 1000]]; 
+
+    // 1. Configuração Base com L.CRS.Simple e Limites (MaxBounds)
+    var map = L.map('map', {
+        crs: L.CRS.Simple,
+        minZoom: -3,
+        maxZoom: 3,
+        maxBounds: imageBounds, // TAMANHO FINITO
+        maxBoundsViscosity: 1.0 // Impede sair dos limites definidos
+    });
+
+    // 2. Configurando o Fundo (Image Overlay)
+    var imageUrl = 'https://via.placeholder.com/1000x1500.png?text=Mapa+PUCPR+com+Vagas';
+    L.imageOverlay(imageUrl, imageBounds).addTo(map);
+    map.fitBounds(imageBounds); // Centraliza automaticamente
+
+    // --- PLANO CARTESIANO (GRID) ---
+    function desenharGridPlanoCartesiano() {
+        var espacamento = 100; // Linhas a cada 100 unidades
+
+        // Eixo Y (Linhas Horizontais)
+        for (var y = 0; y <= 1500; y += espacamento) {
+            L.polyline([[y, 0], [y, 1000]], {color: 'rgba(255,255,255,0.3)', weight: y % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false}).addTo(map);
+            if (y > 0) {
+                L.marker([y, 0], {
+                    interactive: false,
+                    icon: L.divIcon({className: 'grid-label', html: 'Y: ' + y, iconSize: [40, 15], iconAnchor: [45, 8]})
+                }).addTo(map);
+            }
+        }
+
+        // Eixo X (Linhas Verticais)
+        for (var x = 0; x <= 1000; x += espacamento) {
+            L.polyline([[0, x], [1500, x]], {color: 'rgba(255,255,255,0.3)', weight: x % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false}).addTo(map);
+            L.marker([0, x], {
+                interactive: false,
+                icon: L.divIcon({className: 'grid-label', html: 'X: ' + x, iconSize: [40, 15], iconAnchor: [15, -5]})
+            }).addTo(map);
+        }
+        
+        // Origem (0,0)
+        L.marker([0, 0], {
+            interactive: false,
+            icon: L.divIcon({className: 'grid-label', html: '(0,0)', iconSize: [30, 15], iconAnchor: [35, -5]})
+        }).addTo(map);
+    }
+    desenharGridPlanoCartesiano();
+
+    // 3. Renderizando Vagas Iniciais e armazenando em um grupo
+    var vagasIniciais = [
+        { "id": "V-01", "coords": [[1200, 100], [1280, 140]], "status": "disponivel" },
+        { "id": "V-02", "coords": [[1200, 160], [1280, 200]], "status": "disponivel" },
+        { "id": "V-03", "coords": [[1200, 220], [1280, 260]], "status": "disponivel" }
+    ];
+
+    var layerVagas = L.layerGroup().addTo(map);
+    var todasAsVagasMap = {};
+
+    function criarRetanguloVaga(vaga, isNova) {
+        var corFill = isNova ? '#f1c40f' : '#2ecc71';
+        if (vaga.status === 'ocupada') corFill = '#e74c3c';
+        
+        var rect = L.rectangle(vaga.coords, {
+            color: '#ffffff',
+            weight: 1,
+            fillColor: corFill,
+            fillOpacity: 0.5
+        });
+        
+        rect.vagaObj = vaga; // Salvar objeto da vaga no retângulo
+        
+        rect.bindTooltip(vaga.id);
+        
+        todasAsVagasMap[vaga.id] = { obj: vaga, layer: rect };
+        layerVagas.addLayer(rect);
+
+        // Ao clicar no retângulo, se for modo de análise, abre o popup com os dados
+        rect.on('click', function(e) {
+            if (modoAtual === 'analisar') {
+                abrirPopupVaga(vaga.id);
+                L.DomEvent.stopPropagation(e); // Previne que o clique dispare no mapa
+            }
+        });
+    }
+
+    function abrirPopupVaga(id) {
+        var vagaInfo = todasAsVagasMap[id];
+        if (!vagaInfo) return;
+        
+        var v = vagaInfo.obj;
+        var infoPopup = `
+            <div style="font-size: 13px; min-width: 140px;">
+                <h4 style="margin:0 0 5px 0; border-bottom: 1px solid #ccc; padding-bottom:3px;">Vaga: ${v.id}</h4>
+                <b>Status:</b> ${v.status === 'disponivel' ? '<span style="color:green;">Disponível</span>' : '<span style="color:red;">Ocupada</span>'}<br>
+                <b>X:</b> ${v.coords[0][1]} ↔ ${v.coords[1][1]}<br>
+                <b>Y:</b> ${v.coords[0][0]} ↔ ${v.coords[1][0]}<br>
+                <hr style="margin: 8px 0;">
+                <button class="btn-analisar" onclick="alterarStatus('${v.id}')" style="font-size:11px; padding:4px;">Alternar Status</button>
+                <button class="btn-limpar" onclick="removerVaga('${v.id}')" style="font-size:11px; padding:4px;">Remover Vaga</button>
+            </div>
+        `;
+        
+        vagaInfo.layer.bindPopup(infoPopup).openPopup();
+    }
+
+    // Funções de interação do popup
+    window.alterarStatus = function(id) {
+        var vagaInfo = todasAsVagasMap[id];
+        if (vagaInfo) {
+            vagaInfo.obj.status = vagaInfo.obj.status === 'disponivel' ? 'ocupada' : 'disponivel';
+            vagaInfo.layer.setStyle({ fillColor: vagaInfo.obj.status === 'disponivel' ? '#2ecc71' : '#e74c3c' });
+            abrirPopupVaga(id); // Atualiza o popup
+        }
+    }
+    
+    window.removerVaga = function(id) {
+        if(confirm("Tem certeza que deseja remover a vaga " + id + "?")) {
+            var vagaInfo = todasAsVagasMap[id];
+            if (vagaInfo) {
+                layerVagas.removeLayer(vagaInfo.layer);
+                delete todasAsVagasMap[id];
+                map.closePopup();
+            }
+        }
+    }
+
+    function renderizarVagas(listaVagas) {
+        listaVagas.forEach(function(vaga) {
+            criarRetanguloVaga(vaga, false);
+        });
+    }
+
+    renderizarVagas(vagasIniciais);
+
+
+    // 4. Lógica de Modos e Criação Dinâmica
+    var modoAtual = ''; // 'adicionar' ou 'analisar'
+    var contadorNovasVagas = 4; 
+    var outputTextarea = document.getElementById('json-output');
+
+    window.setModo = function(modo) {
+        modoAtual = modo;
+        
+        document.getElementById('btn-add').classList.remove('active-mode');
+        document.getElementById('btn-analisar').classList.remove('active-mode');
+        
+        document.getElementById('btn-' + modo).classList.add('active-mode');
+        
+        document.getElementById('help-add').style.display = modo === 'adicionar' ? 'block' : 'none';
+        document.getElementById('help-analisar').style.display = modo === 'analisar' ? 'block' : 'none';
+
+        if (modo === 'adicionar') {
+            map.closePopup();
+            // Desabilita popup ao clicar nas vagas, gerencia pelo evento `click` no retângulo
+        }
+    }
+
+    // Inicializa no modo de adição
+    setModo('adicionar');
+
+    map.on('click', function(e) {
+        if (modoAtual !== 'adicionar') return; // Se for analisar, o clique na vaga abre popup e o clique no mapa fecha
+
+        // Tamanho padrão pelo input
+        var largura = parseInt(document.getElementById('vaga-largura').value) || 40;
+        var altura = parseInt(document.getElementById('vaga-altura').value) || 80;
+
+        var y = Math.round(e.latlng.lat);
+        var x = Math.round(e.latlng.lng);
+
+        var bounds = [
+            [y, x],
+            [y + altura, x + largura]
+        ];
+        
+        var novoId = 'V-' + String(contadorNovasVagas).padStart(2, '0');
+
+        // 2. Gera a estrutura JSON
+        var jsonGerado = {
+            id: novoId,
+            coords: bounds,
+            status: 'disponivel'
+        };
+
+        // 1. Desenha e armazena
+        criarRetanguloVaga(jsonGerado, true);
+
+        // 3. Adiciona na Textarea da interface para copiar colar
+        outputTextarea.value += JSON.stringify(jsonGerado) + ",\n";
+        outputTextarea.scrollTop = outputTextarea.scrollHeight; // Rola pro fim
+
+        contadorNovasVagas++;
+    });
+
+    // Função do botão limpar painel JSON
+    window.limparPainel = function() {
+        if(confirm("Tem certeza que deseja limpar apenas o log JSON? (As vagas do mapa não serão apagadas aqui)")) {
+            outputTextarea.value = '';
+        }
+    }
+
+</script>
+</body>
+</html>

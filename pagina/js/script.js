@@ -3,7 +3,7 @@ const hero = document.querySelector(".fundo_header");
 
 window.addEventListener("scroll", function () {
 
-    const trigger = hero.offsetHeight - 100;
+    const trigger = hero.offsetHeight -500;
 
     if (window.scrollY > trigger) {
         header.classList.add("scrolled");
@@ -12,3 +12,13 @@ window.addEventListener("scroll", function () {
     }
 
 });
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visivel');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.modulo').forEach(m => observer.observe(m));
