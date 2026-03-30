@@ -1,44 +1,58 @@
+/* fontes */
+
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-ExtraLight.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-ExtraLight.woff2") format("woff2");
     font-weight: 100;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-Light.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-Light.woff2") format("woff2");
     font-weight: 200;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-Book.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-Book.woff2") format("woff2");
     font-weight: 300;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-Regular.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-Regular.woff2") format("woff2");
     font-weight: 400;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-Medium.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-Medium.woff2") format("woff2");
     font-weight: 500;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-SemiBold.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-SemiBold.woff2") format("woff2");
     font-weight: 600;
 }
 
 @font-face {
     font-family: "BL Melody";
-    src: url("../fonts/BLMelody-Bold.woff2") format("woff2");
+    src: url("../fonts/melody/BLMelody-Bold.woff2") format("woff2");
     font-weight: 700;
 }
+
+@font-face {
+    font-family: "Baunk";
+    src: url("../fonts/baunk/Baunk.otf") format("woff2");
+}
+
+@font-face {
+    font-family: "Markl";
+    src: url("../fonts/markl/MarklMono-Regular.otf") format("woff2");
+}
+
+/* final fontes */
 
 :root{
     --preto: #0a0a0a;
@@ -46,17 +60,18 @@
     --verde_hover: #233a33;
     --branco: #FFFFFF;  
     --cinza: #B3B3B3;
+    --cinza_hover: #8c8c8c;
 }
 
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "BL Melody", sans-serif;
 }
 body{
     background-color: var(--preto);
     color: var(--branco);
+    font-family: "Markl";
 }
 
 .header{
@@ -75,14 +90,15 @@ body{
     background: transparent;
     transition: background 0.3s ease;
 
-    color: var(--branco);
+    color: var(--verde);
 }
 
 .header.scrolled{
     background: var(--preto);
 }
 .header .menu{
-    font-size: 28px;
+    font-size: 35px;
+    font-weight: bold;
     cursor: pointer;
 }
 
@@ -99,7 +115,7 @@ body{
 .header .cadastro{
     display: flex;
     gap: 20px;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .header .cadastro a{
@@ -141,6 +157,7 @@ body{
 }
 
 .fundo_header .titulo_header{
+    font-family: "Baunk";
     display:flex;
     justify-content:center;
     align-items:center;
@@ -148,7 +165,7 @@ body{
 }
 .fundo_header .titulo_header h1{
     font-size:150px;
-    font-weight:700;
+    font-weight:800;
     color: var(--branco);
 }
 
@@ -157,8 +174,8 @@ body{
     --input-line: var(--branco);
     --input-text-color: var(--branco);
     --input-text-hover-color: transparent;
-    --input-border-color: #808080;
-    --input-border-hover-color: #999999;
+    --input-border-color: var(--cinza);
+    --input-border-hover-color: var(--cinza_hover);
     --input-bg-color: #333333;
     --search-max-width: 500px;
     --search-min-width: 300px;
@@ -289,7 +306,7 @@ body{
 }
 
 .descricao_basica p {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 20px;
     max-width: 60ch;
     margin: 0 auto;
@@ -297,7 +314,7 @@ body{
 }
 
 .descricao_basica h3 {
-    font-weight: 800;
+    font-weight: 700;
     font-size: 50px;
     max-width: 30ch;
     margin: 0 auto;
@@ -450,3 +467,78 @@ body{
   }
 
   
+footer { border-top: 1px solid var(--cinza); padding: 64px 60px 40px; }
+
+.footer-cima {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid var(--cinza);
+}
+
+.footer-nav ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-nav a {
+  font-family: "Markl";
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 800;
+  color: var(--branco);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
+}
+.footer-nav a:hover { color: var(--cinza); }
+
+.footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 32px; }
+
+.footer-socials ul { list-style: none; display: flex; gap: 8px; }
+.footer-socials a {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--branco); text-decoration: none;
+  border: 1px solid var(--cinza); padding: 8px 14px; border-radius: 100px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.footer-socials a:hover { background: var(--verde); color: var(--branco); border-color: var(--verde); }
+
+.footer-contatos p { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cinza); margin-bottom: 6px; }
+.footer-contatos a { font-family: "Markl"; font-size: 1.05rem; font-weight: 600; color: var(--branco); text-decoration: none; transition: color 0.2s; }
+.footer-contatos a:hover { color: var(--cinza); }
+
+.footer-baixo { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 48px; gap: 40px; flex-wrap: wrap; }
+
+.footer-novidades p { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cinza); margin-bottom: 14px; }
+
+.newsletter-form {
+  display: flex; align-items: center;
+  border: 1px solid var(--cinza); border-radius: 100px; overflow: hidden; width: 320px;
+  transition: border-color 0.2s;
+}
+.newsletter-form:focus-within { border-color: var(--cinza_hover); }
+.newsletter-form input { flex: 1; background: transparent; border: none; outline: none; padding: 12px 20px; font-size: 0.85rem; color: var(--branco); }
+.newsletter-form input::placeholder { color: var(--cinza); }
+.newsletter-form button { background: none; border: none; padding: 12px 20px; color: var(--branco); font-size: 1.1rem; cursor: pointer; transition: color 0.2s; }
+.newsletter-form button:hover { color: var(--cinza); }
+
+.footer-logo svg { width: clamp(200px, 30vw, 400px); height: auto; opacity: 0.9; }
+
+.footer-copyright {
+  display: flex; gap: 20px; align-items: center; width: 100%;
+  padding-top: 32px; border-top: 1px solid var(--cinza); margin-top: 32px;
+}
+.footer-copyright a, .footer-copyright span { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cinza); text-decoration: none; transition: color 0.2s; }
+.footer-copyright a:hover { color: var(--branco); }
+.footer-copyright span { margin-left: auto; }
+
+.footer-logo svg text {
+  font-family: "Baunk" !important;
+}
+
+@media (max-width: 768px) {
+  footer { padding: 48px 24px 32px; }
+  .footer-cima { flex-direction: column; }
+  .footer-right { align-items: flex-start; }
+  .footer-baixo { flex-direction: column; align-items: flex-start; }
+  .newsletter-form { width: 100%; }
+}
