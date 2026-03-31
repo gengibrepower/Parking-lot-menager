@@ -467,6 +467,8 @@ body{
   }
 
   
+/* footer */
+
 footer { border-top: 1px solid var(--cinza); padding: 64px 60px 40px; }
 
 .footer-cima {
