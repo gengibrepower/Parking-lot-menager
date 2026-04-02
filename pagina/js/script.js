@@ -1,6 +1,7 @@
 const header = document.querySelector(".header");
 const hero = document.querySelector(".fundo_header");
 
+
 window.addEventListener("scroll", function () {
 
     const trigger = hero.offsetHeight -500;
@@ -13,10 +14,14 @@ window.addEventListener("scroll", function () {
 
 });
 
+if (window.location.pathname.includes("cadastro.html")) {
+    header.classList.add("scrolled");
+}
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.classList.add('visivel');
+        entry.target.classList.add('visivel');
     }
   });
 }, { threshold: 0.15 });

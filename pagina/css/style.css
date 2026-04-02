@@ -63,6 +63,10 @@
     --cinza_hover: #8c8c8c;
 }
 
+.html {
+  scroll-behavior: smooth;
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -100,6 +104,7 @@ body{
     font-size: 35px;
     font-weight: bold;
     cursor: pointer;
+    color: var(--branco);
 }
 
 .header .logo{
@@ -108,9 +113,17 @@ body{
     transform: translateX(-50%);
 }
 
-.header .logo img{
-    width: 60px;
+.header .logo h2{
+    font-family: "Baunk";
+    font-size: 40px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
+
+.header.scrolled .logo h2 {
+    opacity: 1;
+}
+
 
 .header .cadastro{
     display: flex;
@@ -465,7 +478,11 @@ body{
     border-top: 1px solid rgba(255,255,255,0.07);
     margin-bottom: 100px;
   }
-
+  .divisorcima{
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 90px;
+  }
   
 /* footer */
 
