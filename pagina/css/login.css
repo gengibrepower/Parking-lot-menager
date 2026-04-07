@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* FONTES - Mantemos suas fontes originais caso queira usar em algo específico */
+@font-face {
+    font-family: 'baunk';
+    src: url(../fonts/Baunk/Baunk.otf);
+}
+
+@font-face {     
+    font-family: 'markl';
+    src: url(../fonts/markl/MarklMono-Regular.otf);
+}
+
+@font-face {     
+    font-family: 'melody';
+    src: url(../fonts/melody/BLMelody-Bold.otf);
+}
+
+/* TOKENS - CORES ORIGINAIS COM EFEITOS APLICADOS */
+:root {
+    --preto: #0a0a0a;
+    --verde: #1A312A;
+    --verde_hover: #233a33;
+    --branco: #FFFFFF;
+    --cinza: #B3B3B3;
+    --cinza_hover: #8c8c8c;
+
+    /* Variáveis dos efeitos premium reaproveitando sua paleta preta/branca elegante */
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --border-glass: rgba(255, 255, 255, 0.08); 
+    --text-main: var(--branco);
+    --text-muted: var(--cinza);
+    --accent-glow: rgba(255, 255, 255, 0.15); /* Efeito de brilho em branco em vez de neon */
+}
+
+/* ZERANDO TUDO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY E FUNDO OUTFIT */
+body {
+    font-family: 'markl', sans-serif;
+    /* Fundo original */
+    background: linear-gradient(135deg, var(--preto), #1a1a1a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-main);
+}
+
+/* CONTAINER PRINCIPAL - GLASSMORPHISM AVANÇADO */
+.container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 55px 45px;
+    border-radius: 24px;
+    width: 420px;
+    /* Sombras originais adaptadas para o efeito de profundidade fluído */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Detalhe de reflexo leve passando pelo topo do container */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: scanlight 4s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes scanlight {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* TITULO */
+h1 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-family: 'melody', sans-serif;
+    font-weight: 500;
+    font-size: 35px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+/* INPUTS */
+.login-box {
+    position: relative;
+    margin: 28px 0;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 16px 45px 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15); /* Original */
+    background: rgba(255,255,255,0.03); /* Original */
+    color: var(--text-main);
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+    /* Transição elástica quando foca no input mantida */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-box input::placeholder {
+    color: var(--text-muted);
+    transition: opacity 0.3s ease;
+}
+
+/* EFEITO AO CLICAR NO INPUT */
+.login-box input:focus {
+    border-color: var(--cinza); /* Original */
+    box-shadow: 0 0 15px rgba(255,255,255,0.1), inset 0 0 5px rgba(255,255,255,0.02);
+    transform: scale(1.02);
+}
+
+.login-box input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* ÍCONE DO INPUT */
+.login-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 22px;
+    transition: color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-box input:focus ~ i {
+    color: var(--text-main);
+    transform: translateY(-50%) scale(1.15);
+    text-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* BARRA DE LEMBRAR SENHA */
+.remember-pass {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px; 
+    margin: 10px 0 25px 0;
+    color: var(--text-main);
+}
+
+.remember-pass label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+/* CUSTOM CHECKBOX - MODERNA NO ESTILO ORIGINAL */
+.remember-pass input[type="checkbox"] {
+    appearance: none;
+    background-color: transparent;
+    border: 1px solid var(--text-muted);
+    width: 17px;
+    height: 17px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.remember-pass input[type="checkbox"]:checked {
+    background-color: var(--branco);
+    border-color: var(--branco);
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.remember-pass input[type="checkbox"]:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--preto);
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* LINK ESQUECEU A SENHA */
+.remember-pass a {
+    color: var(--cinza);
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+    padding-bottom: 2px;
+}
+
+.remember-pass a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--cinza_hover);
+    transition: width 0.3s ease;
+}
+
+.remember-pass a:hover {
+    color: var(--cinza_hover);
+}
+
+.remember-pass a:hover::after {
+    width: 100%;
+}
+
+/* BOTÃO - COR ORIGINAL COM ANIMAÇÃO MANEIRA */
+.login {
+    width: 100%;
+    padding: 16px;
+    border-radius: 30px; /* Formato pílula original */
+    border: 1px solid rgba(255,255,255,0.2);
+    background: var(--branco);
+    color: var(--preto);
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+/* Animação mantida no hover, porém trocando a cor como no botão original */
+.login:hover {
+    background: transparent;
+    color: var(--branco);
+    border-color: var(--cinza);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(255,255,255,0.15);
+}
+
+.login:active {
+    transform: translateY(2px) scale(0.98);
+}
+
+/* ÁREA DE CADASTRO */
+.not-account {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.not-account a {
+    color: var(--cinza);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+}
+
+.not-account a:hover {
+    color: var(--cinza_hover);
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
