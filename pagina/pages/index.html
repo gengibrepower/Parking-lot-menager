@@ -1,35 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMPS</title>
     <link rel="stylesheet" href="../css/style.css">
-
 </head>
 <body>
+
+    <!-- Cursor customizado -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Barra de progresso -->
+    <div class="scroll-progress"></div>
+
+    <!-- Drawer do menu -->
+    <div class="drawer" id="drawer">
+        <nav>
+            <a href="#" data-index="01">Home</a>
+            <a href="#" data-index="02">Estacionamentos</a>
+            <a href="#" data-index="03">Funcionalidades</a>
+            <a href="#" data-index="04">Sobre</a>
+            <a href="#" data-index="05">Área do dono</a>
+        </nav>
+    </div>
+
     <div class="header">
-        <div class="menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <div class="menu" id="menuBtn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
         </div>
         <div class="logo">
             <h2>AMPS</h2>
         </div>
         <div class="cadastro">
-            <a href="#" class="btn-login">Login</a>
-            <a href="cadastro.html" class="btn-cadastro">Cadastro</a>
+            <a href="#">login</a>
+            <a href="cadastro.html">cadastro</a>
         </div>
     </div>
 
     <div class="fundo_header">
-
         <div class="conteudo_header">
-
             <div class="titulo_header">
-                <h1>AMPS</h1>
-                <p>Gestão de Estacionamento Inteligente</p>
+                <h1 class="hero-titulo">AMPS</h1>
             </div>
-
+            <p class="hero-sub">Automated Management Parking System</p>
             <div class="header_pesquisa">
                 <div class="caixa_header">
                     <div class="elemento_pesquisa_header">
@@ -37,171 +54,151 @@
                         <div class="caixa_header_icone">
                             <button class="botao_conteudo_header">
                                 <i class="icone_pesquisa_header">
-                                    <svg xmlns="://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#fff"></path></svg>
                                 </i>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <div class="hero-scroll-hint">
+                <span>scroll</span>
+                <div class="hero-scroll-line"></div>
+            </div>
         </div>
-
     </div>
 
     <div class="descricao_basica">
         <h3>O que somos?</h3>
-        <p>O AMPS é um modelo para gerenciar qualquer estacionamento de forma otimizada. Utilizando de um modelo matemático ele direciona os carros que entrarem no estacionamento para a vagal ideal evitando superlotação em apenas uma área e exagerado de procura de uma vaga.</p>
+        <p>O AMPS é um modelo para gerenciar qualquer estacionamento de forma otimizada. Utilizando de um modelo matemático ele direciona os carros que entrarem no estacionamento para a vaga ideal evitando superlotação em apenas uma área e exagerado de procura de uma vaga.</p>
     </div>
-
 
     <div class="secao">
-    <div class="secao_titulo">
-        <span>Funcionalidades</span>
-        <h2>Tudo que você precisa<br>em um só lugar</h2>
-    </div>
+        <div class="secao_titulo">
+            <span>Funcionalidades</span>
+            <h2>Tudo que você precisa<br>em um só lugar</h2>
+        </div>
 
-    <div class="modulo" id="mod1">
-        <div class="modulo_texto">
-        <span class="modulo_numero">01</span>
-        <h3 class="modulo_titulo">funcionalidade</h3>
-        <p class="modulo_desc">Descrição breve.</p>
-        <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+        <div class="modulo" id="mod1">
+            <div class="modulo_texto">
+                <span class="modulo_numero">01</span>
+                <h3 class="modulo_titulo">funcionalidade</h3>
+                <p class="modulo_desc">Descrição breve.</p>
+                <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+            <div class="modulo_imagem">
+                <div class="detalhe_canto tl"></div>
+                <div class="detalhe_canto br"></div>
+                <div class="placeholder_img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    <span>Imagem / Preview</span>
+                </div>
+            </div>
         </div>
-        <div class="modulo_imagem">
-        <div class="detalhe_canto tl"></div>
-        <div class="detalhe_canto br"></div>
-        <div class="placeholder_img">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            <span>Imagem / Preview</span>
-        </div>
-        </div>
-    </div>
 
-    <hr class="divisor">
+        <hr class="divisor">
 
-    <div class="modulo invertido" id="mod2">
-        <div class="modulo_texto">
-        <span class="modulo_numero">02</span>
-        <h3 class="modulo_titulo">funcionalidade</h3>
-        <p class="modulo_desc">Descrição breve.</p>
-        <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+        <div class="modulo invertido" id="mod2">
+            <div class="modulo_texto">
+                <span class="modulo_numero">02</span>
+                <h3 class="modulo_titulo">funcionalidade</h3>
+                <p class="modulo_desc">Descrição breve.</p>
+                <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+            <div class="modulo_imagem">
+                <div class="detalhe_canto tl"></div>
+                <div class="detalhe_canto br"></div>
+                <div class="placeholder_img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                    <span>Imagem / Preview</span>
+                </div>
+            </div>
         </div>
-        <div class="modulo_imagem">
-        <div class="detalhe_canto tl"></div>
-        <div class="detalhe_canto br"></div>
-        <div class="placeholder_img">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            <span>Imagem / Preview</span>
-        </div>
-        </div>
-    </div>
 
-    <hr class="divisor">
+        <hr class="divisor">
 
-    <div class="modulo" id="mod3">
-        <div class="modulo_texto">
-        <span class="modulo_numero">03</span>
-        <h3 class="modulo_titulo">funcionalidade</h3>
-        <p class="modulo_desc">Descrição breve.</p>
-        <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+        <div class="modulo" id="mod3">
+            <div class="modulo_texto">
+                <span class="modulo_numero">03</span>
+                <h3 class="modulo_titulo">funcionalidade</h3>
+                <p class="modulo_desc">Descrição breve.</p>
+                <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+            <div class="modulo_imagem">
+                <div class="detalhe_canto tl"></div>
+                <div class="detalhe_canto br"></div>
+                <div class="placeholder_img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Imagem / Preview</span>
+                </div>
+            </div>
         </div>
-        <div class="modulo_imagem">
-        <div class="detalhe_canto tl"></div>
-        <div class="detalhe_canto br"></div>
-        <div class="placeholder_img">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Imagem / Preview</span>
-        </div>
-        </div>
-    </div>
 
-    <hr class="divisor">
+        <hr class="divisor">
 
-    <div class="modulo invertido" id="mod4">
-        <div class="modulo_texto">
-        <span class="modulo_numero">04</span>
-        <h3 class="modulo_titulo">funcionalidade</h3>
-        <p class="modulo_desc">Descrição breve.</p>
-        <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+        <div class="modulo invertido" id="mod4">
+            <div class="modulo_texto">
+                <span class="modulo_numero">04</span>
+                <h3 class="modulo_titulo">funcionalidade</h3>
+                <p class="modulo_desc">Descrição breve.</p>
+                <button class="modulo_btn">Saiba mais <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+            <div class="modulo_imagem">
+                <div class="detalhe_canto tl"></div>
+                <div class="detalhe_canto br"></div>
+                <div class="placeholder_img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <span>Imagem / Preview</span>
+                </div>
+            </div>
         </div>
-        <div class="modulo_imagem">
-        <div class="detalhe_canto tl"></div>
-        <div class="detalhe_canto br"></div>
-        <div class="placeholder_img">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span>Imagem / Preview</span>
-        </div>
-        </div>
-    </div>
     </div>
 
     <footer>
-    <div class="footer-cima">
-        <nav class="footer-nav">
-        <ul>
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="https://github.com/gengibrepower">Trabalhos</a></li>
-            <li><a href="/pagina principal">Sobre</a></li>
-            <li><a href="/mapa">Estacionamentos</a></li>
-            <li><a href="/editor">Área do dono</a></li>
-        </ul>
-        </nav>
-
-        <div class="footer-right">
-        <div class="footer-socials">
-            <ul>
-            <li>
-                <a href="https://instagram.com" target="_blank" rel="noopener">
-                ↗ Instagram
-                </a>
-            </li>
-            <li>
-                <a href="https://linkedin.com" target="_blank" rel="noopener">
-                ↗ LinkedIn
-                </a>
-            </li>
-            </ul>
+        <div class="footer-cima">
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="https://github.com/gengibrepower">Trabalhos</a></li>
+                    <li><a href="/pagina-principal">Sobre</a></li>
+                    <li><a href="/mapa">Estacionamentos</a></li>
+                    <li><a href="/editor">Área do dono</a></li>
+                </ul>
+            </nav>
+            <div class="footer-right">
+                <div class="footer-socials">
+                    <ul>
+                        <li><a href="https://instagram.com" target="_blank" rel="noopener">↗ Instagram</a></li>
+                        <li><a href="https://linkedin.com" target="_blank" rel="noopener">↗ LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contatos">
+                    <p>Novos projetos</p>
+                    <a href="mailto:felipegegembauer@gmail.com">felipegegembauer@gmail.com</a>
+                </div>
+            </div>
         </div>
 
-        <div class="footer-contatos">
-            <p>Novos projetos</p>
-            <a href="mailto:ola@felipegegembauer@gmail.com">felipegegembauer@gmail.com</a>
-        </div>
-        </div>
-    </div>
-
-    <div class="footer-baixo">
-        <!-- Newsletter -->
-        <div class="footer-novidades">
-        <p>Novidades (sem spam)</p>
-        <div class="newsletter-form">
-            <input type="email" placeholder="Seu e-mail" />
-            <button type="button">→</button>
-        </div>
+        <div class="footer-baixo">
+            <div class="footer-novidades">
+                <p>Novidades (sem spam)</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Seu e-mail" />
+                    <button type="button">→</button>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" fill="white">
+                    <text x="0" y="68" font-family="Baunk" font-size="80" font-weight="800" letter-spacing="-4">AMPS</text>
+                </svg>
+            </div>
         </div>
 
-        <div class="footer-logo">
-        <!-- Substitua pelo SVG/logo do seu projeto -->
-        <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" fill="white">
-            <text
-            x="0" y="68"
-            font-family: "Baunk";
-            font-size="80"
-            font-weight="800"
-            letter-spacing="-4"
-            >AMPS</text>
-        </svg>
+        <div class="footer-copyright">
+            <a href="/legal">Termos de uso</a>
+            <span>© 2026 — AMPS</span>
         </div>
-    </div>
-
-    <!-- Copyright -->
-    <div class="footer-copyright">
-        <a href="/legal">Termos de uso</a>
-        <span>© 2026 — AMPS</span>
-    </div>
     </footer>
-
 
     <script src="../js/script.js"></script>
 </body>
