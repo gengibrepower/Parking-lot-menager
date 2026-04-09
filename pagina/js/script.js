@@ -30,6 +30,7 @@ overlay.addEventListener('click', closeDrawer);
 
 drawer.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeDrawer);
+<<<<<<< HEAD
 });
 
 /* ── Funcionalidades: slides ── */
@@ -108,12 +109,23 @@ function loopScroll() {
     }
 
     if (!headerFixado && hero) {
+=======
+});
+
+/* ── Scroll: header ── */
+
+const hero = document.querySelector('.fundo_header');
+
+window.addEventListener('scroll', () => {
+    if (hero) {
+>>>>>>> e391fd9ffd1493909e144b58955208db97ad90b4
         const trigger = hero.offsetHeight - 500;
         if (scrollAtual > trigger) {
             header.classList.add('scrolled');
             headerFixado = true;
         }
     }
+<<<<<<< HEAD
 
     if (wrapper) {
         const rect   = wrapper.getBoundingClientRect();
@@ -237,3 +249,22 @@ loginModalBtn.addEventListener('click', () => {
 });
 
 renderizarHeader();
+=======
+});
+
+if (window.location.pathname.includes('cadastro.html')) {
+    header.classList.add('scrolled');
+}
+
+/* ── Intersection Observer: módulos ── */
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visivel');
+        }
+    });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.modulo').forEach(m => observer.observe(m));
+>>>>>>> e391fd9ffd1493909e144b58955208db97ad90b4
