@@ -246,4 +246,22 @@ loginModalBtn.addEventListener('click', () => {
     });
 });
 
+/* ── Pesquisa ── */
+
+const inputPesquisa = document.getElementById('inputPesquisa');
+const btnPesquisa   = document.getElementById('btnPesquisa');
+
+function executarPesquisa() {
+    const termo = inputPesquisa.value.trim();
+    if (!termo) return;
+    localStorage.setItem('amps_pesquisa', termo);
+    // redirecionar futuramente: window.location.href = '/mapa?q=' + encodeURIComponent(termo);
+}
+
+btnPesquisa.addEventListener('click', executarPesquisa);
+
+inputPesquisa.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') executarPesquisa();
+});
+
 renderizarHeader();
