@@ -34,8 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('usuarios', JSON.stringify(listaInformacoesUsuario))
         localStorage.setItem('amps_logado', JSON.stringify(usuario))
 
-        window.location.href = '../index.html'
+        window.location.href = 'index.html'
     })
+
+    document.getElementById('btnJaTenhoConta').addEventListener('click', (e) => {
+        e.preventDefault()
+        sessionStorage.setItem('amps_abrirLogin', '1')
+        window.location.href = 'index.html'
+    })
+
 })
 
 function verificarLista() {

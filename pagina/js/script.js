@@ -265,3 +265,9 @@ inputPesquisa.addEventListener('keydown', (e) => {
 });
 
 renderizarHeader();
+
+
+if (sessionStorage.getItem('amps_abrirLogin') === '1') {
+    sessionStorage.removeItem('amps_abrirLogin');
+    if (!getLogado()) abrirModal();
+}
