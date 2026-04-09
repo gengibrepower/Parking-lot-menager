@@ -80,6 +80,9 @@ function lerp(a, b, t) {
 
 window.addEventListener('wheel', (e) => {
     e.preventDefault();
+
+    if (bloqueado) return;
+
     const forca   = Math.min(Math.abs(e.deltaY), 300);
     const direcao = e.deltaY > 0 ? 1 : -1;
     scrollAlvo += direcao * forca * 1.8;
@@ -120,13 +123,20 @@ function loopScroll() {
         const dentro = rect.top <= 0 && rect.bottom >= window.innerHeight;
 
         if (dentro && !bloqueado) {
-            const progresso = Math.abs(rect.top) / (wrapper.offsetHeight - window.innerHeight);
-            const index     = Math.min(Math.floor(progresso * total), total - 1);
+            const progresso  = Math.abs(rect.top) / (wrapper.offsetHeight - window.innerHeight);
+            const index      = Math.min(Math.floor(progresso * total), total - 1);
 
             if (index !== atual) {
+                // Só avança um slide por vez
+                const proximo = index > atual ? atual + 1 : atual - 1;
                 bloqueado = true;
-                irParaSlide(index);
-                setTimeout(() => { bloqueado = false; }, 700);
+
+                // Trava o scroll no ponto exato do slide atual+1
+                const alturaSlide = (wrapper.offsetHeight - window.innerHeight) / total;
+                scrollAlvo = wrapper.offsetTop + proximo * alturaSlide;
+
+                irParaSlide(proximo);
+                setTimeout(() => { bloqueado = false; }, 800);
             }
         }
     }
