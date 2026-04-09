@@ -50,7 +50,7 @@
     --preto: #0a0a0a;
     --verde: #1A312A;
     --verde_hover: #233a33;
-    --verde_accent: #4CAF8A;
+    --verde_accent: #146245;
     --branco: #FFFFFF;
     --cinza: #B3B3B3;
     --cinza_hover: #8c8c8c;
@@ -66,7 +66,6 @@
 
 html {
     scroll-behavior: smooth;
-    cursor: none;
 }
 
 body {
@@ -76,49 +75,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ── Cursor customizado ── */
 
-.cursor {
-    width: 8px;
-    height: 8px;
-    background: var(--verde_accent);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s, background 0.2s;
-}
-
-.cursor-follower {
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(76, 175, 138, 0.5);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.12s ease, width 0.25s, height 0.25s, border-color 0.25s;
-}
-
-body:has(a:hover) .cursor,
-body:has(button:hover) .cursor {
-    width: 12px;
-    height: 12px;
-    background: var(--branco);
-}
-
-body:has(a:hover) .cursor-follower,
-body:has(button:hover) .cursor-follower {
-    width: 48px;
-    height: 48px;
-    border-color: rgba(255,255,255,0.4);
-}
 
 /* ── Barra de progresso de scroll ── */
 
@@ -139,69 +96,106 @@ body:has(button:hover) .cursor-follower {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 280px;
     height: 100vh;
     z-index: 98;
     background: var(--preto);
+    border-right: 1px solid rgba(255,255,255,0.07);
     display: flex;
-    align-items: center;
-    padding: 120px 80px 80px;
+    align-items: flex-start;
+    padding: 100px 32px 40px;
 
-    clip-path: inset(0 0 100% 0);
-    transition: clip-path 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .drawer.open {
-    clip-path: inset(0 0 0% 0);
+    transform: translateX(0);
 }
 
 .drawer nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     width: 100%;
 }
 
 .drawer nav a {
-    font-family: "Baunk";
-    font-size: clamp(40px, 7vw, 90px);
-    font-weight: 800;
+    font-family: "Markl", monospace;
+    font-size: 15px;
+    font-weight: 400;
     text-decoration: none;
-    color: var(--branco);
-    letter-spacing: -0.02em;
+    color: var(--cinza);
+    letter-spacing: 0.05em;
     line-height: 1;
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.4s ease, transform 0.4s ease, color 0.2s;
+    transform: translateX(-16px);
+    transition: opacity 0.35s ease, transform 0.35s ease, color 0.2s;
+}
+
+.drawer nav a:last-child {
+    border-bottom: none;
 }
 
 .drawer nav a[data-index]::before {
     content: attr(data-index);
     font-family: "Markl", monospace;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 10px;
     color: var(--verde_accent);
-    letter-spacing: 3px;
-    margin-top: 8px;
-    min-width: 32px;
+    letter-spacing: 2px;
+    min-width: 24px;
+    opacity: 0.8;
 }
 
 .drawer nav a:hover {
-    color: var(--verde_accent);
+    color: var(--branco);
 }
 
 .drawer.open nav a {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
 }
-.drawer.open nav a:nth-child(1) { transition-delay: 0.1s; }
-.drawer.open nav a:nth-child(2) { transition-delay: 0.15s; }
-.drawer.open nav a:nth-child(3) { transition-delay: 0.2s; }
-.drawer.open nav a:nth-child(4) { transition-delay: 0.25s; }
-.drawer.open nav a:nth-child(5) { transition-delay: 0.3s; }
+.drawer.open nav a:nth-child(1) { transition-delay: 0.08s; }
+.drawer.open nav a:nth-child(2) { transition-delay: 0.13s; }
+.drawer.open nav a:nth-child(3) { transition-delay: 0.18s; }
+.drawer.open nav a:nth-child(4) { transition-delay: 0.23s; }
+.drawer.open nav a:nth-child(5) { transition-delay: 0.28s; }
+
+/* Overlay escuro atrás do drawer */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 97;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 97;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
 
 /* ── Header ── */
 
@@ -231,7 +225,7 @@ body:has(button:hover) .cursor-follower {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    cursor: none;
+    cursor: pointer;
     padding: 6px;
     z-index: 101;
     position: relative;
@@ -375,38 +369,6 @@ body:has(button:hover) .cursor-follower {
     to { opacity: 1; }
 }
 
-/* Scroll hint */
-.hero-scroll-hint {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    opacity: 0;
-    animation: heroFade 0.8s ease 1.2s forwards;
-}
-
-.hero-scroll-hint span {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--cinza);
-}
-
-.hero-scroll-line {
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(to bottom, var(--cinza), transparent);
-    animation: scrollLine 1.5s ease-in-out infinite;
-}
-
-@keyframes scrollLine {
-    0%, 100% { transform: scaleY(1); opacity: 1; }
-    50% { transform: scaleY(0.4); opacity: 0.4; }
-}
 
 /* Search */
 .header_pesquisa {
@@ -480,7 +442,7 @@ body:has(button:hover) .cursor-follower {
     justify-content: center;
     border-radius: 6px;
     transition: background 0.2s;
-    cursor: none;
+    cursor: pointer;
 }
 
 .caixa_header_icone:hover {
@@ -490,7 +452,7 @@ body:has(button:hover) .cursor-follower {
 .botao_conteudo_header {
     background: transparent;
     border: none;
-    cursor: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -647,7 +609,7 @@ body:has(button:hover) .cursor-follower {
     font-family: "Markl", monospace;
     font-size: 13px;
     font-weight: 500;
-    cursor: none;
+    cursor: pointer;
     width: fit-content;
     transition: background 0.25s ease, border-color 0.25s, transform 0.2s;
     letter-spacing: 0.05em;
@@ -907,7 +869,7 @@ footer {
     padding: 12px 20px;
     color: var(--branco);
     font-size: 1.1rem;
-    cursor: none;
+    cursor: pointer;
     transition: color 0.2s, transform 0.2s;
 }
 
@@ -973,4 +935,367 @@ footer {
     .cursor, .cursor-follower { display: none; }
     .hero-titulo { font-size: 70px; }
     .fundo_header .titulo_header h1 { font-size: 80px; }
+}
+
+/* ── Modal de Login ── */
+
+.login-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.login-modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.login-modal {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 48px 40px 40px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    transform: translateY(24px);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-modal-overlay.open .login-modal {
+    transform: translateY(0);
+}
+
+.login-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--cinza);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+}
+
+.login-modal-close:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--branco);
+}
+
+.login-modal-titulo {
+    font-family: "Baunk";
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.login-modal-sub {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cinza);
+    text-align: center;
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+
+.login-box-modal {
+    position: relative;
+}
+
+.login-box-modal input {
+    width: 100%;
+    height: 52px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0 16px;
+    color: var(--branco);
+    font-family: "Markl", monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-box-modal input::placeholder {
+    color: var(--cinza);
+}
+
+.login-box-modal input:focus {
+    border-color: var(--verde_accent);
+    box-shadow: 0 0 0 3px rgba(20, 98, 69, 0.2);
+}
+
+.login-modal-erro {
+    font-size: 12px;
+    color: #e05a5a;
+    min-height: 16px;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.login-modal-btn {
+    width: 100%;
+    height: 52px;
+    background: var(--verde);
+    border: 1px solid var(--verde);
+    border-radius: 8px;
+    color: var(--branco);
+    font-family: "Markl", monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+    margin-top: 4px;
+}
+
+.login-modal-btn:hover {
+    background: var(--verde_hover);
+    transform: translateY(-1px);
+}
+
+.login-modal-rodape {
+    text-align: center;
+    font-size: 13px;
+    color: var(--cinza);
+}
+
+.login-modal-rodape a {
+    color: var(--branco);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    transition: border-color 0.2s;
+}
+
+.login-modal-rodape a:hover {
+    border-color: var(--verde_accent);
+}
+
+/* ── Header: usuário logado ── */
+
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.user-pill:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--verde_accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--branco);
+    flex-shrink: 0;
+}
+
+.user-nome {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--branco);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 160px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 102;
+}
+
+.user-pill:hover .user-dropdown,
+.user-pill:focus-within .user-dropdown {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.user-dropdown a,
+.user-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    font-family: "Markl", monospace;
+    font-size: 13px;
+    color: var(--cinza);
+    text-decoration: none;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.03em;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--branco);
+}
+
+.user-dropdown button {
+    color: #e05a5a;
+}
+
+.user-dropdown button:hover {
+    background: rgba(224, 90, 90, 0.08);
+    color: #e05a5a;
+}
+
+/* ── Funcionalidades: scroll travado ── */
+
+.funcionalidades-wrapper {
+    height: calc(4 * 100vh);
+    position: relative;
+}
+
+.funcionalidades-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.func-slide {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    padding: 0 100px;
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+}
+
+.func-slide.ativo {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.func-slide.saindo {
+    opacity: 0;
+    transform: translateY(-60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Indicadores */
+.func-indicadores {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+}
+
+.func-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.func-dot.ativo {
+    background: var(--verde_accent);
+    transform: scale(1.4);
+}
+
+/* Mantém estilos internos do módulo */
+.func-slide .modulo_texto {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .funcionalidades-wrapper {
+        height: auto;
+    }
+
+    .funcionalidades-sticky {
+        position: relative;
+        height: auto;
+        overflow: visible;
+        flex-direction: column;
+    }
+
+    .func-slide {
+        position: relative;
+        inset: unset;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 60px 24px;
+        opacity: 1;
+        transform: none;
+        pointer-events: all;
+    }
+
+    .func-slide.saindo {
+        opacity: 1;
+        transform: none;
+    }
+
+    .func-indicadores {
+        display: none;
+    }
 }

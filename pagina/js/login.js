@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    let dados = []
+    verificarLista();
 
     document.getElementById('btn-cadastrar').addEventListener('click', () => {
 
@@ -16,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return
         }
 
+        if (verificaUsuarioExistente(cpf)) {
+            alert('CPF já cadastrado.')
+            return
+        }
+
+        let listaInformacoesUsuario = JSON.parse(localStorage.getItem('usuarios')) || []
+
         let usuario = {
             nome: nome,
             email: email,
@@ -24,15 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
             tipoConta: tipoConta
         }
 
-        dados.push(usuario)
+        listaInformacoesUsuario.push(usuario)
+        localStorage.setItem('usuarios', JSON.stringify(listaInformacoesUsuario))
+        localStorage.setItem('amps_logado', JSON.stringify(usuario))
 
-        // salva no localStorage
-        localStorage.setItem('usuarios', JSON.stringify(dados))
-
-        console.log(usuario)
-
-        // window.location.href = "../pages/login.html"
-
+        window.location.href = '../index.html'
     })
-
 })
+
+function verificarLista() {
+    const lista = localStorage.getItem('usuarios')
+    if (lista == null) {
+        localStorage.setItem('usuarios', JSON.stringify([]))
+    }
+}
+
+function verificaUsuarioExistente(cpf) {
+    let lista = JSON.parse(localStorage.getItem('usuarios')) || []
+    return lista.some(usuario => usuario.cpf === cpf)
+}

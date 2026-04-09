@@ -1,83 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
-/* FONTES - Mantemos suas fontes originais caso queira usar em algo específico */
 @font-face {
-    font-family: 'baunk';
-    src: url(../fonts/Baunk/Baunk.otf);
+    font-family: "Baunk";
+    src: url("../fonts/baunk/Baunk.otf") format("opentype");
+}
+@font-face {
+    font-family: "Markl";
+    src: url("../fonts/markl/MarklMono-Regular.otf") format("opentype");
 }
 
-@font-face {     
-    font-family: 'markl';
-    src: url(../fonts/markl/MarklMono-Regular.otf);
-}
-
-@font-face {     
-    font-family: 'melody';
-    src: url(../fonts/melody/BLMelody-Bold.otf);
-}
-
-/* TOKENS - CORES ORIGINAIS COM EFEITOS APLICADOS */
 :root {
     --preto: #0a0a0a;
     --verde: #1A312A;
     --verde_hover: #233a33;
+    --verde_accent: #146245;
     --branco: #FFFFFF;
     --cinza: #B3B3B3;
     --cinza_hover: #8c8c8c;
-
-    /* Variáveis dos efeitos premium reaproveitando sua paleta preta/branca elegante */
-    --card-bg: rgba(255, 255, 255, 0.04);
-    --border-glass: rgba(255, 255, 255, 0.08); 
-    --text-main: var(--branco);
-    --text-muted: var(--cinza);
-    --accent-glow: rgba(255, 255, 255, 0.15); /* Efeito de brilho em branco em vez de neon */
 }
 
-/* ZERANDO TUDO */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* BODY E FUNDO OUTFIT */
 body {
-    font-family: 'markl', sans-serif;
-    /* Fundo original */
-    background: linear-gradient(135deg, var(--preto), #1a1a1a);
+    font-family: "Markl", monospace;
+    background-color: var(--preto);
+    background-image:
+        linear-gradient(rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.85) 60%, #0A0A0A 100%),
+        url("../images/garagem.png");
+    background-size: cover;
+    background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: var(--text-main);
+    color: var(--branco);
 }
 
-/* CONTAINER PRINCIPAL - GLASSMORPHISM AVANÇADO */
 .container {
-    background: var(--card-bg);
-    border: 1px solid var(--border-glass);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 55px 45px;
-    border-radius: 24px;
-    width: 420px;
-    /* Sombras originais adaptadas para o efeito de profundidade fluído */
-    box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    padding: 52px 44px 44px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
     position: relative;
     overflow: hidden;
 }
 
-/* Detalhe de reflexo leve passando pelo topo do container */
 .container::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: scanlight 4s linear infinite;
-    opacity: 0.8;
+    top: 0; left: -100%;
+    width: 50%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: scanlight 5s linear infinite;
 }
 
 @keyframes scanlight {
@@ -85,78 +62,103 @@ body {
     100% { left: 200%; }
 }
 
-/* TITULO */
 h1 {
+    font-family: "Baunk";
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
     text-align: center;
-    margin-bottom: 35px;
-    font-family: 'melody', sans-serif;
-    font-weight: 500;
-    font-size: 35px;
-    letter-spacing: 1px;
-    font-weight: bold;
+    margin-bottom: 32px;
 }
 
-/* INPUTS */
 .login-box {
     position: relative;
-    margin: 28px 0;
+    margin: 20px 0;
 }
 
 .login-box input {
     width: 100%;
-    padding: 16px 45px 16px 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.15); /* Original */
-    background: rgba(255,255,255,0.03); /* Original */
-    color: var(--text-main);
-    font-size: 15px;
-    font-family: 'Outfit', sans-serif;
+    height: 52px;
+    padding: 0 48px 0 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.04);
+    color: var(--branco);
+    font-size: 14px;
+    font-family: "Markl", monospace;
     outline: none;
-    /* Transição elástica quando foca no input mantida */
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    letter-spacing: 0.03em;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
 .login-box input::placeholder {
-    color: var(--text-muted);
-    transition: opacity 0.3s ease;
+    color: var(--cinza);
 }
 
-/* EFEITO AO CLICAR NO INPUT */
 .login-box input:focus {
-    border-color: var(--cinza); /* Original */
-    box-shadow: 0 0 15px rgba(255,255,255,0.1), inset 0 0 5px rgba(255,255,255,0.02);
-    transform: scale(1.02);
+    border-color: var(--verde_accent);
+    box-shadow: 0 0 0 3px rgba(20, 98, 69, 0.2);
+    transform: scale(1.01);
 }
 
-.login-box input:focus::placeholder {
-    opacity: 0.5;
-}
-
-/* ÍCONE DO INPUT */
 .login-box i {
     position: absolute;
-    right: 20px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-muted);
-    font-size: 22px;
-    transition: color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: var(--cinza);
+    font-size: 20px;
+    transition: color 0.2s;
+    pointer-events: none;
 }
 
 .login-box input:focus ~ i {
-    color: var(--text-main);
-    transform: translateY(-50%) scale(1.15);
-    text-shadow: 0 0 12px var(--accent-glow);
+    color: var(--verde_accent);
 }
 
-/* BARRA DE LEMBRAR SENHA */
+.account-type {
+    display: flex;
+    justify-content: space-around;
+    margin: -4px 0 24px 0;
+    font-size: 13px;
+    color: var(--cinza);
+    letter-spacing: 0.05em;
+}
+
+.account-type label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.account-type label:hover { color: var(--branco); }
+
+.account-type input[type="radio"] {
+    appearance: none;
+    width: 16px; height: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.account-type input[type="radio"]:checked {
+    border-color: var(--verde_accent);
+    background: var(--verde_accent);
+    box-shadow: 0 0 0 3px rgba(20,98,69,0.2);
+}
+
 .remember-pass {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px; 
-    margin: 10px 0 25px 0;
-    color: var(--text-main);
+    font-size: 13px;
+    margin: -4px 0 24px 0;
+    color: var(--cinza);
+    letter-spacing: 0.03em;
 }
 
 .remember-pass label {
@@ -164,113 +166,88 @@ h1 {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: color 0.3s;
 }
 
-/* CUSTOM CHECKBOX - MODERNA NO ESTILO ORIGINAL */
 .remember-pass input[type="checkbox"] {
     appearance: none;
-    background-color: transparent;
-    border: 1px solid var(--text-muted);
-    width: 17px;
-    height: 17px;
+    width: 16px; height: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 4px;
     cursor: pointer;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
 }
 
 .remember-pass input[type="checkbox"]:checked {
-    background-color: var(--branco);
-    border-color: var(--branco);
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    background: var(--verde_accent);
+    border-color: var(--verde_accent);
 }
 
 .remember-pass input[type="checkbox"]:checked::after {
     content: '✔';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--preto);
-    font-size: 11px;
-    font-weight: bold;
+    color: var(--branco);
+    font-size: 10px;
 }
 
-/* LINK ESQUECEU A SENHA */
 .remember-pass a {
     color: var(--cinza);
     text-decoration: none;
     position: relative;
-    transition: all 0.3s ease;
-    padding-bottom: 2px;
+    transition: color 0.2s;
 }
 
 .remember-pass a::after {
     content: '';
     position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: 0;
-    left: 0;
-    background-color: var(--cinza_hover);
-    transition: width 0.3s ease;
+    bottom: -2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--verde_accent);
+    transition: width 0.3s;
 }
 
-.remember-pass a:hover {
-    color: var(--cinza_hover);
-}
+.remember-pass a:hover { color: var(--branco); }
+.remember-pass a:hover::after { width: 100%; }
 
-.remember-pass a:hover::after {
-    width: 100%;
-}
-
-/* BOTÃO - COR ORIGINAL COM ANIMAÇÃO MANEIRA */
 .login {
     width: 100%;
-    padding: 16px;
-    border-radius: 30px; /* Formato pílula original */
-    border: 1px solid rgba(255,255,255,0.2);
-    background: var(--branco);
-    color: var(--preto);
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-}
-
-/* Animação mantida no hover, porém trocando a cor como no botão original */
-.login:hover {
-    background: transparent;
+    height: 52px;
+    border-radius: 8px;
+    border: 1px solid var(--verde);
+    background: var(--verde);
     color: var(--branco);
-    border-color: var(--cinza);
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(255,255,255,0.15);
+    font-family: "Markl", monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+    margin-top: 4px;
 }
 
-.login:active {
-    transform: translateY(2px) scale(0.98);
+.login:hover {
+    background: var(--verde_hover);
+    transform: translateY(-2px);
 }
 
-/* ÁREA DE CADASTRO */
+.login:active { transform: translateY(1px); }
+
 .not-account {
     text-align: center;
-    margin-top: 25px;
-    font-size: 14px;
-    color: var(--text-main);
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--cinza);
+    letter-spacing: 0.03em;
 }
 
 .not-account a {
-    color: var(--cinza);
+    color: var(--branco);
     text-decoration: none;
-    font-weight: bold;
-    margin-left: 5px;
-    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-left: 4px;
+    transition: border-color 0.2s;
 }
 
-.not-account a:hover {
-    color: var(--cinza_hover);
-    text-shadow: 0 0 10px rgba(255,255,255,0.2);
-}
+.not-account a:hover { border-color: var(--verde_accent); }
