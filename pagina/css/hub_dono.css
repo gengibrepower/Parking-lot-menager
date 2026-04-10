@@ -1,0 +1,783 @@
+/* ── Fontes ── */
+
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-ExtraLight.woff2") format("woff2");
+    font-weight: 100;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-Light.woff2") format("woff2");
+    font-weight: 200;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-Book.woff2") format("woff2");
+    font-weight: 300;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-Regular.woff2") format("woff2");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-Medium.woff2") format("woff2");
+    font-weight: 500;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+}
+@font-face {
+    font-family: "BL Melody";
+    src: url("../fonts/melody/BLMelody-Bold.woff2") format("woff2");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Baunk";
+    src: url("../fonts/baunk/Baunk.otf") format("opentype");
+}
+@font-face {
+    font-family: "Markl";
+    src: url("../fonts/markl/MarklMono-Regular.otf") format("opentype");
+}
+
+/* ── Variáveis ── */
+
+:root {
+    --preto: #0a0a0a;
+    --verde: #1A312A;
+    --verde_hover: #233a33;
+    --verde_accent: #146245;
+    --branco: #FFFFFF;
+    --cinza: #B3B3B3;
+    --cinza_hover: #8c8c8c;
+}
+
+/* ── Reset & Base ── */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--preto);
+    color: var(--branco);
+    font-family: "Markl", monospace;
+    overflow-x: hidden;
+}
+
+
+
+/* ── Barra de progresso de scroll ── */
+
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--verde_accent);
+    z-index: 9997;
+    transition: width 0.1s linear;
+}
+
+/* ── Drawer ── */
+
+.drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 98;
+    background: var(--preto);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: flex-start;
+    padding: 100px 32px 40px;
+
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.drawer.open {
+    transform: translateX(0);
+}
+
+.drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.drawer nav a {
+    font-family: "Markl", monospace;
+    font-size: 15px;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--cinza);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    opacity: 0;
+    transform: translateX(-16px);
+    transition: opacity 0.35s ease, transform 0.35s ease, color 0.2s;
+}
+
+.drawer nav a:last-child {
+    border-bottom: none;
+}
+
+.drawer nav a[data-index]::before {
+    content: attr(data-index);
+    font-family: "Markl", monospace;
+    font-size: 10px;
+    color: var(--verde_accent);
+    letter-spacing: 2px;
+    min-width: 24px;
+    opacity: 0.8;
+}
+
+.drawer nav a:hover {
+    color: var(--branco);
+}
+
+.drawer.open nav a {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.drawer.open nav a:nth-child(1) { transition-delay: 0.08s; }
+.drawer.open nav a:nth-child(2) { transition-delay: 0.13s; }
+.drawer.open nav a:nth-child(3) { transition-delay: 0.18s; }
+.drawer.open nav a:nth-child(4) { transition-delay: 0.23s; }
+.drawer.open nav a:nth-child(5) { transition-delay: 0.28s; }
+
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 97;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.drawer-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ── Header ── */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: transparent;
+    transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.header.scrolled {
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Hamburguer */
+.header .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px;
+    z-index: 101;
+    position: relative;
+}
+
+.header .menu .bar {
+    display: block;
+    width: 28px;
+    height: 2px;
+    background: var(--branco);
+    border-radius: 2px;
+    transform-origin: center;
+    transition:
+        transform 0.4s cubic-bezier(0.76, 0, 0.24, 1),
+        opacity   0.3s ease,
+        width     0.3s ease;
+}
+
+.header .menu.open .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.header .menu.open .bar:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+.header .menu.open .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Logo */
+.header .logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.header .logo h2 {
+    font-family: "Baunk";
+    font-size: 36px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    letter-spacing: 0.05em;
+    opacity: 1;
+}
+
+
+/* Cadastro */
+.header .cadastro {
+    display: flex;
+    gap: 8px;
+    font-weight: 500;
+    z-index: 101;
+}
+
+.header .cadastro a {
+    text-decoration: none;
+    color: var(--branco);
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    letter-spacing: 0.05em;
+}
+
+.header .cadastro a:first-child:hover {
+    border-color: rgba(255,255,255,0.2);
+}
+
+.header .cadastro a:last-child {
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.05);
+}
+
+.header .cadastro a:last-child:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+}
+
+/* ── Footer ── */
+
+footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 64px 60px 40px;
+}
+
+.footer-cima {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.footer-nav a {
+    font-family: "Markl", monospace;
+    font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+    font-weight: 800;
+    color: var(--branco);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--verde_accent);
+    transition: width 0.3s ease;
+}
+
+.footer-nav a:hover {
+    color: var(--verde_accent);
+}
+
+.footer-nav a:hover::after {
+    width: 100%;
+}
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 32px;
+}
+
+.footer-socials ul {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+}
+
+.footer-socials a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--branco);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 18px;
+    border-radius: 100px;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.footer-socials a:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+}
+
+.footer-contatos p {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cinza);
+    margin-bottom: 8px;
+}
+
+.footer-contatos a {
+    font-family: "Markl", monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--branco);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+}
+
+.footer-contatos a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--verde_accent);
+    transition: width 0.3s ease;
+}
+
+.footer-contatos a:hover { color: var(--verde_accent); }
+.footer-contatos a:hover::after { width: 100%; }
+
+.footer-baixo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 48px;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.footer-novidades p {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cinza);
+    margin-bottom: 14px;
+}
+
+.newsletter-form {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    overflow: hidden;
+    width: 320px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.newsletter-form:focus-within {
+    border-color: var(--verde_accent);
+    box-shadow: 0 0 0 3px rgba(76,175,138,0.1);
+}
+
+.newsletter-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    color: var(--branco);
+    font-family: "Markl", monospace;
+}
+
+.newsletter-form input::placeholder { color: var(--cinza); }
+
+.newsletter-form button {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    color: var(--branco);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.newsletter-form button:hover {
+    color: var(--verde_accent);
+    transform: translateX(2px);
+}
+
+.footer-logo svg {
+    width: clamp(180px, 28vw, 380px);
+    height: auto;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.footer-logo svg:hover { opacity: 1; }
+
+.footer-logo svg text {
+    font-family: "Baunk" !important;
+}
+
+.footer-copyright {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 32px;
+}
+
+.footer-copyright a,
+.footer-copyright span {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cinza);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-copyright a:hover { color: var(--branco); }
+.footer-copyright span { margin-left: auto; }
+
+/* ── Responsivo ── */
+
+@media (max-width: 900px) {
+    .header { padding: 16px 24px; }
+    .secao { padding: 60px 24px; }
+    .modulo { grid-template-columns: 1fr; gap: 40px; }
+    .modulo.invertido { direction: ltr; }
+    .descricao_basica { padding: 80px 24px; }
+    footer { padding: 48px 24px 32px; }
+    .footer-cima { flex-direction: column; }
+    .footer-right { align-items: flex-start; }
+    .footer-baixo { flex-direction: column; align-items: flex-start; }
+    .newsletter-form { width: 100%; }
+    .drawer { padding: 100px 32px 60px; }
+}
+
+@media (max-width: 600px) {
+    html { cursor: auto; }
+    .cursor, .cursor-follower { display: none; }
+    .hero-titulo { font-size: 70px; }
+    .fundo_header .titulo_header h1 { font-size: 80px; }
+}
+
+/* ── Modal de Login ── */
+
+.login-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.login-modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.login-modal {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 48px 40px 40px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    transform: translateY(24px);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-modal-overlay.open .login-modal {
+    transform: translateY(0);
+}
+
+.login-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--cinza);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+}
+
+.login-modal-close:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--branco);
+}
+
+.login-modal-titulo {
+    font-family: "Baunk";
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.login-modal-sub {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cinza);
+    text-align: center;
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+
+.login-box-modal {
+    position: relative;
+}
+
+.login-box-modal input {
+    width: 100%;
+    height: 52px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0 16px;
+    color: var(--branco);
+    font-family: "Markl", monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-box-modal input::placeholder {
+    color: var(--cinza);
+}
+
+.login-box-modal input:focus {
+    border-color: var(--verde_accent);
+    box-shadow: 0 0 0 3px rgba(20, 98, 69, 0.2);
+}
+
+.login-modal-erro {
+    font-size: 12px;
+    color: #e05a5a;
+    min-height: 16px;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.login-modal-btn {
+    width: 100%;
+    height: 52px;
+    background: var(--verde);
+    border: 1px solid var(--verde);
+    border-radius: 8px;
+    color: var(--branco);
+    font-family: "Markl", monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+    margin-top: 4px;
+}
+
+.login-modal-btn:hover {
+    background: var(--verde_hover);
+    transform: translateY(-1px);
+}
+
+.login-modal-rodape {
+    text-align: center;
+    font-size: 13px;
+    color: var(--cinza);
+}
+
+.login-modal-rodape a {
+    color: var(--branco);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    transition: border-color 0.2s;
+}
+
+.login-modal-rodape a:hover {
+    border-color: var(--verde_accent);
+}
+
+/* ── Header: usuário logado ── */
+
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 6px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.user-pill:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--verde_accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--branco);
+    flex-shrink: 0;
+}
+
+.user-nome {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--branco);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 160px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 102;
+}
+
+.user-pill:hover .user-dropdown,
+.user-pill:focus-within .user-dropdown {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.user-dropdown a,
+.user-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    font-family: "Markl", monospace;
+    font-size: 13px;
+    color: var(--cinza);
+    text-decoration: none;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.03em;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--branco);
+}
+
+.user-dropdown button {
+    color: #e05a5a;
+}
+
+.user-dropdown button:hover {
+    background: rgba(224, 90, 90, 0.08);
+    color: #e05a5a;
+}

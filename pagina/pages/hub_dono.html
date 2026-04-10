@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do dono</title>
+    <link rel="stylesheet" href="../css/hub_dono.css"
+</head>
+<body>
+
+    <!-- Drawer do menu -->
+    <div class="drawer" id="drawer">
+        <nav>
+            <a href="#" data-index="01">Home</a>
+            <a href="#" data-index="02">Estacionamentos</a>
+            <a href="#" data-index="03">Funcionalidades</a>
+            <a href="#" data-index="04">Sobre</a>
+            <a href="hub_dono.html" data-index="05">Área do dono</a>
+        </nav>
+    </div>
+
+    <div class="header">
+        <div class="menu" id="menuBtn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <div class="logo">
+            <h2>AMPS</h2>
+        </div>
+        <div class="cadastro" id="cadastroArea">
+            <a href="#" id="btnAbrirLogin">login</a>
+            <a href="cadastro.html">cadastro</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-cima">
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="https://github.com/gengibrepower">Trabalhos</a></li>
+                    <li><a href="/pagina-principal">Sobre</a></li>
+                    <li><a href="pesquisa.html">Estacionamentos</a></li>
+                    <li><a href="hub_dono.html">Área do dono</a></li>
+                </ul>
+            </nav>
+            <div class="footer-right">
+                <div class="footer-socials">
+                    <ul>
+                        <li><a href="https://instagram.com" target="_blank" rel="noopener">↗ Instagram</a></li>
+                        <li><a href="https://linkedin.com" target="_blank" rel="noopener">↗ LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contatos">
+                    <p>Novos projetos</p>
+                    <a href="mailto:felipegegembauer@gmail.com">felipegegembauer@gmail.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-baixo">
+            <div class="footer-novidades">
+                <p>Novidades (sem spam)</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Seu e-mail" />
+                    <button type="button">→</button>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" fill="white">
+                    <text x="0" y="68" font-family="Baunk" font-size="80" font-weight="800" letter-spacing="-4">AMPS</text>
+                </svg>
+            </div>
+        </div>
+
+
+        
+        <div class="footer-copyright">
+            <a href="/legal">Termos de uso</a>
+            <span>© 2026 — AMPS</span>
+        </div>
+    </footer>
+
+    <div class="login-modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <button class="login-modal-close" id="loginModalClose">✕</button>
+            <h2 class="login-modal-titulo">AMPS</h2>
+            <p class="login-modal-sub">Automated Management Parking System</p>
+
+            <div class="login-box-modal">
+                <input id="modalEmail" placeholder="E-mail" type="email" autocomplete="email">
+            </div>
+            <div class="login-box-modal">
+                <input id="modalSenha" placeholder="Senha" type="password" autocomplete="current-password">
+            </div>
+
+            <p class="login-modal-erro" id="loginErro"></p>
+
+            <button class="login-modal-btn" id="loginModalBtn">Entrar</button>
+
+            <p class="login-modal-rodape">
+                Não tem conta? <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/hub_dono.js"></script>
+</body>
+</html>
