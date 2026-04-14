@@ -1,434 +1,614 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapeamento de Vagas - PUCPR</title>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        #map {
-            width: 100%;
-            height: 100vh;
-            background-color: #1a1a1a;
-        }
-
-        /* Painel flutuante para facilitar a cópia do JSON (Direito -> Vagas) */
-        #painel {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            width: 320px;
-        }
-
-        /* Painel flutuante exclusivo para Ruas (Esquerdo) */
-        #painel-ruas {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            width: 320px;
-        }
-
-        #painel h3, #painel-ruas h3 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            color: #333;
-        }
-
-        #json-output, #json-output-ruas {
-            width: 100%;
-            height: 150px;
-            resize: vertical;
-            margin-bottom: 10px;
-            font-family: monospace;
-            font-size: 11px;
-            padding: 5px;
-            box-sizing: border-box;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-        }
-
-        button {
-            padding: 8px 15px;
-            cursor: pointer;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
-        button:hover {
-            filter: brightness(0.9);
-        }
-
-        /* Cores dos botões de Vagas */
-        .btn-add { background: #2ecc71; }
-        .btn-analisar { background: #3498db; }
-        .btn-limpar { background: #e74c3c; }
-
-        /* Cores dos botões de Ruas */
-        .btn-add-rua { background: #8e44ad; }
-        .btn-analisar-rua { background: #f39c12; }
-
-        .active-mode {
-            box-shadow: 0 0 0 3px #111;
-            transform: scale(0.98);
-        }
-
-        .help-text {
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .grid-label {
-            color: #fff;
-            font-size: 10px;
-            text-shadow: 1px 1px 2px #000;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-        }
-
-        .inputs-tamanho {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            background: #eee;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .inputs-tamanho label {
-            font-size: 12px;
-            display: block;
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-
-        .inputs-tamanho input {
-            width: 100%;
-            padding: 4px;
-            border: 1px solid #aaa;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        /* Seletor do tipo de rua */
-        #tipo-rua {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            font-family: sans-serif;
-            font-size: 13px;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .modal .form-group {
-            margin-bottom: 10px;
-        }
-
-        .modal .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #555;
-        }
-
-        .modal .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-cancel {
-            background: #95a5a6;
-            width: auto;
-            padding: 8px 15px;
-        }
-
-        .btn-confirm {
-            background: #2ecc71;
-            width: auto;
-            padding: 8px 15px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Painel de Ruas (Esquerdo) -->
-    <div id="painel-ruas">
-        <h3>Mapeamento de Ruas</h3>
-
-        <button id="btn-add-rua" class="btn-add-rua" onclick="setModo('adicionar_rua')">Modo: Adicionar Rua</button>
-        <button id="btn-analisar-rua" class="btn-analisar-rua" onclick="setModo('analisar_rua')">Modo: Analisar Rua</button>
-
-        <div id="opcoes-rua" style="display: none;">
-            <label style="font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block;">Tipo/Direção da Rua:</label>
-            <select id="tipo-rua">
-                <option value="1">Norte (1)</option>
-                <option value="2">Sul (2)</option>
-                <option value="3">Leste (3)</option>
-                <option value="4">Oeste (4)</option>
-                <option value="5">Norte e Sul (5)</option>
-                <option value="curva">Curva</option>
-            </select>
-            <div class="help-text">
-                <b>Como usar:</b><br>
-                Clique no mapa para criar um bloco de rua 100x100 na coordenada selecionada.
-            </div>
-        </div>
-        
-        <div id="help-analisar-rua" class="help-text" style="display: none;">
-            <b>Como usar (Analisar Rua):</b><br>
-            Clique em uma rua existente para ver os detalhes ou removê-la.
-        </div>
-
-        <textarea id="json-output-ruas" placeholder="[ Os objetos JSON das ruas aparecerão aqui... ]"></textarea>
-        <button class="btn-limpar" onclick="limparPainelRuas()">Limpar e Reiniciar JSON (Ruas)</button>
-    </div>
-
-    <!-- Painel de Vagas (Direito) -->
-    <div id="painel">
-        <h3>Mapeamento de Vagas</h3>
-
-        <button id="btn-add" class="btn-add" onclick="abrirModal()">+ Adicionar Nova Vaga</button>
-        <button id="btn-analisar" class="btn-analisar" onclick="setModo('analisar')">Modo: Analisar Vagas</button>
-
-        <div id="help-analisar" class="help-text" style="display: none;">
-            <b>Como usar (Analisar Vaga):</b><br>
-            Clique em uma vaga existente para ver suas informações no popup (ID, Coords, Status).
-        </div>
-
-        <textarea id="json-output" placeholder="[ Os objetos JSON das vagas aparecerão aqui... ]"></textarea>
-        <button class="btn-limpar" onclick="limparPainel()">Limpar e Reiniciar JSON (Vagas)</button>
-    </div>
-
-    <!-- Modal para Coordenadas -->
-    <div id="modal-adicionar" class="modal-overlay">
-        <div class="modal">
-            <h3>Adicionar Nova Vaga</h3>
-            <div class="form-group">
-                <label>Coordenada X 1</label>
-                <input type="number" id="modal-x1" placeholder="Ex: 1200">
-            </div>
-            <div class="form-group">
-                <label>Coordenada X 2</label>
-                <input type="number" id="modal-x2" placeholder="Ex: 1280">
-            </div>
-            <div class="form-group">
-                <label>Coordenada Y 1</label>
-                <input type="number" id="modal-y1" placeholder="Ex: 100">
-            </div>
-            <div class="form-group">
-                <label>Coordenada Y 2</label>
-                <input type="number" id="modal-y2" placeholder="Ex: 140">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-                <button class="btn-confirm" onclick="confirmarVagaModal()">Confirmar Vaga</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="map"></div>
-
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script>
-        // É importante usar as dimensões base da sua imagem. Aqui usamos 2000x3000 px.
-        // Lembrete: formato de bounds no Leaflet é: [ [y_min, x_min], [y_max, x_max] ]
-        var imageBounds = [[0, 0], [3000, 2000]];
-
-        // 1. Configuração Base com L.CRS.Simple e Limites (MaxBounds)
-        var map = L.map('map', {
-            crs: L.CRS.Simple,
-            minZoom: -3,
-            maxZoom: 3,
-            maxBounds: imageBounds, // TAMANHO FINITO
-            maxBoundsViscosity: 1.0 // Impede sair dos limites definidos
-        });
-
-        // 2. Configurando o Fundo (Image Overlay)
-        var imageUrl = 'https://via.placeholder.com/2000x3000.png?text=Mapa+PUCPR+com+Vagas';
-        L.imageOverlay(imageUrl, imageBounds).addTo(map);
-        map.fitBounds(imageBounds); // Centraliza automaticamente
-
-        // --- PLANO CARTESIANO (GRID) ---
-        function desenharGridPlanoCartesiano() {
-            var espacamento = 100; // Linhas a cada 100 unidades
-
-            // Eixo Y (Linhas Horizontais)
-            for (var y = 0; y <= 3000; y += espacamento) {
-                L.polyline([[y, 0], [y, 2000]], { color: 'rgba(255,255,255,0.3)', weight: y % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false }).addTo(map);
-                if (y > 0) {
-                    L.marker([y, 0], {
-                        interactive: false,
-                        icon: L.divIcon({ className: 'grid-label', html: 'Y: ' + y, iconSize: [40, 15], iconAnchor: [45, 8] })
-                    }).addTo(map);
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Mapeamento de Vagas - PUCPR</title>
+            <!-- Leaflet CSS -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+            <style>
+                body,
+                html {
+                    margin: 0;
+                    padding: 0;
+                    height: 100%;
+                    font-family: sans-serif;
                 }
+
+                #map {
+                    width: 100%;
+                    height: 100vh;
+                    background-color: #1a1a1a;
+                }
+
+                /* Painel flutuante para facilitar a cópia do JSON (Direito -> Vagas) */
+                #painel {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    z-index: 1000;
+                    background: rgba(255, 255, 255, 0.95);
+                    padding: 15px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                    width: 320px;
+                }
+
+                /* Painel flutuante exclusivo para Ruas (Esquerdo) */
+                #painel-ruas {
+                    position: absolute;
+                    top: 15px;
+                    left: 15px;
+                    z-index: 1000;
+                    background: rgba(255, 255, 255, 0.95);
+                    padding: 15px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                    width: 320px;
+                }
+
+                #painel h3,
+                #painel-ruas h3 {
+                    margin: 0 0 10px 0;
+                    font-size: 16px;
+                    color: #333;
+                }
+
+                #json-output,
+                #json-output-ruas {
+                    width: 100%;
+                    height: 150px;
+                    resize: vertical;
+                    margin-bottom: 10px;
+                    font-family: monospace;
+                    font-size: 11px;
+                    padding: 5px;
+                    box-sizing: border-box;
+                    background: #f8f9fa;
+                    border: 1px solid #ddd;
+                }
+
+                button {
+                    padding: 8px 15px;
+                    cursor: pointer;
+                    border: none;
+                    color: white;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    width: 100%;
+                    margin-bottom: 5px;
+                }
+
+                button:hover {
+                    filter: brightness(0.9);
+                }
+
+                /* Cores dos botões de Vagas */
+                .btn-add {
+                    background: #2ecc71;
+                }
+
+                .btn-analisar {
+                    background: #3498db;
+                }
+
+                .btn-limpar {
+                    background: #e74c3c;
+                }
+
+                /* Cores dos botões de Ruas */
+                .btn-add-rua {
+                    background: #8e44ad;
+                }
+
+                .btn-analisar-rua {
+                    background: #f39c12;
+                }
+
+                .active-mode {
+                    box-shadow: 0 0 0 3px #111;
+                    transform: scale(0.98);
+                }
+
+                .help-text {
+                    font-size: 12px;
+                    color: #555;
+                    margin-bottom: 10px;
+                    line-height: 1.4;
+                }
+
+                .grid-label {
+                    color: #fff;
+                    font-size: 10px;
+                    text-shadow: 1px 1px 2px #000;
+                    background: transparent;
+                    border: none;
+                    box-shadow: none;
+                }
+
+                .inputs-tamanho {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                    background: #eee;
+                    padding: 8px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+
+                .inputs-tamanho label {
+                    font-size: 12px;
+                    display: block;
+                    font-weight: bold;
+                    margin-bottom: 2px;
+                }
+
+                .inputs-tamanho input {
+                    width: 100%;
+                    padding: 4px;
+                    border: 1px solid #aaa;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                }
+
+                /* Seletor do tipo de rua */
+                #tipo-rua {
+                    width: 100%;
+                    padding: 8px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                    margin-bottom: 10px;
+                    font-family: sans-serif;
+                    font-size: 13px;
+                }
+
+                /* Modal Styles */
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.6);
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 2000;
+                }
+
+                .modal {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    width: 300px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                }
+
+                .modal h3 {
+                    margin-top: 0;
+                    margin-bottom: 15px;
+                    color: #333;
+                }
+
+                .modal .form-group {
+                    margin-bottom: 10px;
+                }
+
+                .modal .form-group label {
+                    display: block;
+                    font-size: 13px;
+                    font-weight: bold;
+                    margin-bottom: 4px;
+                    color: #555;
+                }
+
+                .modal .form-group input {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                }
+
+                .modal-actions {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    margin-top: 15px;
+                }
+
+                .btn-cancel {
+                    background: #95a5a6;
+                    width: auto;
+                    padding: 8px 15px;
+                }
+
+                .btn-confirm {
+                    background: #2ecc71;
+                    width: auto;
+                    padding: 8px 15px;
+                }
+
+                .btn-matriz {
+                    background: #9b59b6;
+                    margin-top: 15px;
+                    font-size: 13px;
+                }
+            </style>
+        </head>
+
+    <body>
+
+        <!-- Painel de Ruas (Esquerdo) -->
+        <div id="painel-ruas">
+            <h3>Mapeamento de Ruas</h3>
+
+            <button id="btn-add-rua" class="btn-add-rua" onclick="setModo('adicionar_rua')"
+                style="margin-bottom: 5px;">Modo: Adicionar Rua (100x100)</button>
+            <button id="btn-add-obstaculo" class="btn-add-rua" onclick="setModo('adicionar_obstaculo_200')"
+                style="background: #34495e; margin-bottom: 5px;">Modo: Adicionar Obstáculo (200x200)</button>
+            <button onclick="abrirModal('rua')" style="background: #e67e22; margin-bottom: 5px;" class="btn-add-rua">+
+                Elemento por Coord.</button>
+            <button id="btn-analisar-rua" class="btn-analisar-rua" onclick="setModo('analisar_rua')">Modo: Analisar
+                Rua</button>
+
+            <div id="opcoes-rua" style="display: none;">
+                <label style="font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block;">Tipo/Direção do
+                    Bloco:</label>
+                <select id="tipo-rua">
+                    <option value="1">Norte (1)</option>
+                    <option value="2">Sul (2)</option>
+                    <option value="3">Leste (3)</option>
+                    <option value="4">Oeste (4)</option>
+                    <option value="5">Norte e Sul (5)</option>
+                    <option value="curva">Curva</option>
+                </select>
+                <div class="help-text">
+                    <b>Como usar:</b><br>
+                    Clique no mapa para criar o bloco na coordenada. O tamanho dependerá do botão selecionado acima.
+                </div>
+            </div>
+
+            <div id="help-analisar-rua" class="help-text" style="display: none;">
+                <b>Como usar (Analisar Rua):</b><br>
+                Clique em uma rua existente para ver os detalhes ou removê-la.
+            </div>
+
+            <textarea id="json-output-ruas" placeholder="[ Os objetos JSON das ruas aparecerão aqui... ]"></textarea>
+            <button class="btn-limpar" onclick="limparPainelRuas()">Limpar e Reiniciar JSON (Ruas)</button>
+        </div>
+
+        <!-- Painel de Vagas (Direito) -->
+        <div id="painel">
+            <h3>Mapeamento de Vagas</h3>
+
+            <button id="btn-add" class="btn-add" onclick="abrirModal('vaga')" style="margin-bottom: 5px;">+ Adicionar
+                Vaga por Coord.</button>
+            <button id="btn-analisar" class="btn-analisar" onclick="setModo('analisar')">Modo: Analisar Vagas</button>
+
+            <div id="help-analisar" class="help-text" style="display: none;">
+                <b>Como usar (Analisar Vaga):</b><br>
+                Clique em uma vaga existente para ver suas informações no popup (ID, Coords, Status).
+            </div>
+
+            <textarea id="json-output" placeholder="[ Os objetos JSON das vagas aparecerão aqui... ]"></textarea>
+            <button class="btn-limpar" onclick="limparPainel()">Limpar e Reiniciar JSON (Vagas)</button>
+
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #ccc;">
+            <button class="btn-matriz" onclick="abrirModalMatriz()">Gerar Matriz Matemática</button>
+        </div>
+
+        <!-- Modal genérico para Coordenadas -->
+        <div id="modal-adicionar" class="modal-overlay">
+            <div class="modal" style="width: 320px;">
+                <h3>Adicionar Elemento</h3>
+                <div class="form-group">
+                    <label>Tipo de Elemento</label>
+                    <select id="modal-tipo" onchange="atualizarModalTipo()"
+                        style="width: 100%; padding: 8px; border-radius:4px; border:1px solid #ccc; font-family: sans-serif;">
+                        <option value="vaga">Vaga de Estacionamento</option>
+                        <option value="rua">Rua Padrão</option>
+                        <option value="obstaculo">Obstáculo / Parede</option>
+                    </select>
+                </div>
+                <div class="form-group" id="modal-subtipo-container" style="display:none;">
+                    <label>Direção da Rua</label>
+                    <select id="modal-subtipo-rua"
+                        style="width: 100%; padding: 8px; border-radius:4px; border:1px solid #ccc; font-family: sans-serif;">
+                        <option value="1">Norte (1)</option>
+                        <option value="2">Sul (2)</option>
+                        <option value="3">Leste (3)</option>
+                        <option value="4">Oeste (4)</option>
+                        <option value="5">Norte e Sul (5)</option>
+                        <option value="curva">Curva</option>
+                    </select>
+                </div>
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #ddd;">
+                <div class="form-group">
+                    <label>Coordenada X 1 (Min)</label>
+                    <input type="number" id="modal-x1" placeholder="Ex: 1200">
+                </div>
+                <div class="form-group">
+                    <label>Coordenada X 2 (Max)</label>
+                    <input type="number" id="modal-x2" placeholder="Ex: 1280">
+                </div>
+                <div class="form-group">
+                    <label>Coordenada Y 1 (Min)</label>
+                    <input type="number" id="modal-y1" placeholder="Ex: 100">
+                </div>
+                <div class="form-group">
+                    <label>Coordenada Y 2 (Max)</label>
+                    <input type="number" id="modal-y2" placeholder="Ex: 140">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                    <button class="btn-confirm" onclick="confirmarElementoModal()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Matriz -->
+        <div id="modal-matriz" class="modal-overlay">
+            <div class="modal" style="width: 350px;">
+                <h3>Gerar Matriz Matemática</h3>
+                <p style="font-size:12px; color:#555; margin-bottom:15px; line-height: 1.4;">
+                    Transforma o mapa em matriz para API/GPS: <b>0 (Vazio)</b>, <b>1 a 6 (Direções de Ruas)</b>, <b>8 (Vaga)</b>, <b>9
+                        (Obstáculo)</b>.
+                </p>
+                <div class="form-group">
+                    <label>Resolução da Matriz (Tamanho = 1 Célula)</label>
+                    <input type="number" id="matriz-resolucao" value="100" min="1">
+                    <div class="help-text" style="font-size:11px; margin-top:5px; margin-bottom:0;">
+                        Por padrão 100 (um bloco vira APENAS 1 número!). Se usar valores baixos (ex: 1 a 10) o arquivo
+                        gera LINHAS GIGANTES e esmaga o leitor de bloco de notas!
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Formato do Arquivo</label>
+                    <select id="matriz-formato"
+                        style="width: 100%; padding: 8px; border-radius:4px; border:1px solid #ccc; font-family: sans-serif;">
+                        <option value="json">JSON Avançado c/ Metadados (Para Programadores)</option>
+                        <option value="txt">TXT Espaçado (Visualização)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label
+                        style="display:flex; align-items:center; cursor:pointer; font-weight:bold; font-size:13px; color:#333;">
+                        <input type="checkbox" id="matriz-recortar" checked style="width:auto; margin-right:8px;">
+                        Recortar Auto-Crop (Reduz Arquivo)
+                    </label>
+                    <div class="help-text" style="font-size:11px; margin-top:2px; margin-bottom:0;">
+                        Remove o excesso de "vazio" e exporta apenas a área desenhada com um Offset de referência,
+                        perfeito para algoritmos de GPS (A*, Dijkstra).
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="fecharModalMatriz()">Cancelar</button>
+                    <button class="btn-confirm" onclick="baixarMatriz()" style="background: #9b59b6;">Exportar
+                        Matriz</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script>
+            // É importante usar as dimensões base da sua imagem. Aqui usamos 2000x3000 px.
+            // Lembrete: formato de bounds no Leaflet é: [ [y_min, x_min], [y_max, x_max] ]
+            var imageBounds = [[0, 0], [3000, 2000]];
+
+            // 1. Configuração Base com L.CRS.Simple e Limites (MaxBounds)
+            var map = L.map('map', {
+                crs: L.CRS.Simple,
+                minZoom: -3,
+                maxZoom: 3,
+                maxBounds: imageBounds, // TAMANHO FINITO
+                maxBoundsViscosity: 1.0 // Impede sair dos limites definidos
+            });
+
+            // 2. Configurando o Fundo (Image Overlay)
+            var imageUrl = 'https://via.placeholder.com/2000x3000.png?text=Mapa+PUCPR+com+Vagas';
+            L.imageOverlay(imageUrl, imageBounds).addTo(map);
+            map.fitBounds(imageBounds); // Centraliza automaticamente
+
+            // --- PLANO CARTESIANO (GRID) ---
+            function desenharGridPlanoCartesiano() {
+                var espacamento = 100; // Linhas a cada 100 unidades
+
+                // Eixo Y (Linhas Horizontais)
+                for (var y = 0; y <= 3000; y += espacamento) {
+                    L.polyline([[y, 0], [y, 2000]], { color: 'rgba(255,255,255,0.3)', weight: y % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false }).addTo(map);
+                    if (y > 0) {
+                        L.marker([y, 0], {
+                            interactive: false,
+                            icon: L.divIcon({ className: 'grid-label', html: 'Y: ' + y, iconSize: [40, 15], iconAnchor: [45, 8] })
+                        }).addTo(map);
+                    }
+                }
+
+                // Eixo X (Linhas Verticais)
+                for (var x = 0; x <= 2000; x += espacamento) {
+                    L.polyline([[0, x], [3000, x]], { color: 'rgba(255,255,255,0.3)', weight: x % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false }).addTo(map);
+                    if (x > 0) {
+                        L.marker([0, x], {
+                            interactive: false,
+                            icon: L.divIcon({ className: 'grid-label', html: 'X: ' + x, iconSize: [40, 15], iconAnchor: [15, -5] })
+                        }).addTo(map);
+                    }
+                }
+
+                // Origem (0,0)
+                L.marker([0, 0], {
+                    interactive: false,
+                    icon: L.divIcon({ className: 'grid-label', html: '(0,0)', iconSize: [30, 15], iconAnchor: [35, -5] })
+                }).addTo(map);
+            }
+            desenharGridPlanoCartesiano();
+
+            // ---- SISTEMA DE VAGAS ----
+            var vagasIniciais = [];
+            var idV = 1;
+            // 5 Blocos principais de vagas
+            var blocosX = [300, 600, 900, 1200, 1500];
+            
+            blocosX.forEach(function(baseX) {
+                // Vagas da quadra no eixo Y de 600 a 2400
+                for(let vY = 600; vY <= 2400; vY += 90) {
+                    // Esquerda (Acesso pela rua da esquerda)
+                    vagasIniciais.push({ 
+                        "id": "V-" + String(idV++).padStart(3,'0'), 
+                        "coords": [[vY, baseX], [vY+70, baseX+100]], 
+                        "status": (Math.random() > 0.7 ? "ocupada" : "disponivel") 
+                    });
+                    // Direita (Acesso pela rua da direita)
+                    vagasIniciais.push({ 
+                        "id": "V-" + String(idV++).padStart(3,'0'), 
+                        "coords": [[vY, baseX+100], [vY+70, baseX+200]], 
+                        "status": (Math.random() > 0.6 ? "ocupada" : "disponivel") 
+                    });
+                }
+            });
+
+            var layerVagas = L.layerGroup().addTo(map);
+            var todasAsVagasMap = {};
+            var contadorNovasVagas = idV;
+
+            // ---- SISTEMA DE RUAS ----
+            var ruasIniciais = [];
+            var idRua = 1;
+            
+            // Avenidas Verticais (Mão Dupla ou Única dependendo da coluna)
+            var viasIniciaisX = [200, 500, 800, 1100, 1400, 1700];
+            viasIniciaisX.forEach(function(viaX, index) {
+                // Direção: Alternando (Norte=1 e Sul=2)
+                let direcao = (index % 2 === 0) ? "2" : "1"; 
+                ruasIniciais.push({
+                    "id": String(idRua++).padStart(2, '0'),
+                    "coords": [[550, viaX], [2500, viaX+100]],
+                    "tipo": direcao // 1=Norte, 2=Sul
+                });
+            });
+
+            // Avenidas Horizontais
+            // Av Principal Cima (Direção Leste = 3)
+            ruasIniciais.push({
+                "id": "AvTop",
+                "coords": [[400, 100], [550, 1900]],
+                "tipo": "3" 
+            });
+            // Av Principal Baixo (Direção Oeste = 4)
+            ruasIniciais.push({
+                "id": "AvBot",
+                "coords": [[2500, 100], [2650, 1900]],
+                "tipo": "4"
+            });
+
+            var layerRuas = L.layerGroup().addTo(map);
+            var todasAsRuasMap = {};
+            var contadorNovasRuas = ruasIniciais.length + 1;
+
+            // ---- SISTEMA DE OBSTÁCULOS ----
+            var obstaculosIniciais = [
+                // Grande Muro Exterior Completo
+                { "id": "MuroTop", "coords": [[300, 50], [400, 1950]], "tipo": "obstaculo" },
+                { "id": "MuroBot", "coords": [[2650, 50], [2750, 1950]], "tipo": "obstaculo" },
+                { "id": "MuroEsq", "coords": [[300, 50], [2750, 100]], "tipo": "obstaculo" },
+                { "id": "MuroDir", "coords": [[300, 1900], [2750, 1950]], "tipo": "obstaculo" },
+                // Canteiros e guaritas
+                { "id": "Guarita-Entrada", "coords": [[400, 50], [550, 100]], "tipo": "obstaculo" }
+            ];
+
+            var layerObstaculos = L.layerGroup().addTo(map);
+            var todosOsObstaculosMap = {};
+            var contadorNovosObstaculos = obstaculosIniciais.length + 1;
+
+            function criarRetanguloObstaculo(obs) {
+                var rect = L.rectangle(obs.coords, {
+                    color: '#ecf0f1',
+                    weight: 1,
+                    fillColor: '#34495e', // Cor cinza bem escuro para diferenciar
+                    fillOpacity: 0.95
+                });
+
+                rect.obsObj = obs;
+                rect.bindTooltip("Obstáculo-" + obs.id);
+
+                todosOsObstaculosMap[obs.id] = { obj: obs, layer: rect };
+                layerObstaculos.addLayer(rect);
+
+                rect.on('click', function (e) {
+                    if (modoAtual === 'analisar_rua' || modoAtual === 'analisar') {
+                        abrirPopupObstaculo(obs.id);
+                        L.DomEvent.stopPropagation(e);
+                    }
+                });
             }
 
-            // Eixo X (Linhas Verticais)
-            for (var x = 0; x <= 2000; x += espacamento) {
-                L.polyline([[0, x], [3000, x]], { color: 'rgba(255,255,255,0.3)', weight: x % 500 === 0 ? 2 : 1, dashArray: '5, 5', interactive: false }).addTo(map);
-                if (x > 0) {
-                    L.marker([0, x], {
-                        interactive: false,
-                        icon: L.divIcon({ className: 'grid-label', html: 'X: ' + x, iconSize: [40, 15], iconAnchor: [15, -5] })
-                    }).addTo(map);
-                }
+
+            function criarRetanguloVaga(vaga, isNova) {
+                var corFill = isNova ? '#f1c40f' : '#2ecc71';
+                if (vaga.status === 'ocupada') corFill = '#e74c3c';
+
+                var rect = L.rectangle(vaga.coords, {
+                    color: '#ffffff',
+                    weight: 1,
+                    fillColor: corFill,
+                    fillOpacity: 0.5
+                });
+
+                rect.vagaObj = vaga; // Salvar objeto da vaga no retângulo
+
+                rect.bindTooltip(vaga.id);
+
+                todasAsVagasMap[vaga.id] = { obj: vaga, layer: rect };
+                layerVagas.addLayer(rect);
+
+                // Ao clicar no retângulo, se for modo de análise, abre o popup com os dados
+                rect.on('click', function (e) {
+                    if (modoAtual === 'analisar') {
+                        abrirPopupVaga(vaga.id);
+                        L.DomEvent.stopPropagation(e); // Previne que o clique dispare no mapa
+                    }
+                });
             }
 
-            // Origem (0,0)
-            L.marker([0, 0], {
-                interactive: false,
-                icon: L.divIcon({ className: 'grid-label', html: '(0,0)', iconSize: [30, 15], iconAnchor: [35, -5] })
-            }).addTo(map);
-        }
-        desenharGridPlanoCartesiano();
+            function criarRetanguloRua(rua, isNova) {
+                var rect = L.rectangle(rua.coords, {
+                    color: '#ecf0f1',
+                    weight: 2,
+                    fillColor: '#7f8c8d', // Cor cinza para a rua 
+                    fillOpacity: 0.8
+                });
 
-        // ---- SISTEMA DE VAGAS ----
-        var vagasIniciais = [
-            { "id": "V-01", "coords": [[1200, 100], [1280, 140]], "status": "disponivel" },
-            { "id": "V-02", "coords": [[1200, 160], [1280, 200]], "status": "disponivel" },
-            { "id": "V-03", "coords": [[1200, 220], [1280, 260]], "status": "disponivel" }
-        ];
+                rect.ruaObj = rua;
 
-        var layerVagas = L.layerGroup().addTo(map);
-        var todasAsVagasMap = {};
-        var contadorNovasVagas = 4;
-        
-        // ---- SISTEMA DE RUAS ----
-        var layerRuas = L.layerGroup().addTo(map);
-        var todasAsRuasMap = {};
-        var contadorNovasRuas = 1;
+                let rotuloTooltip = "R-" + rua.id + " (Tipo: " + rua.tipo + ")";
+                rect.bindTooltip(rotuloTooltip);
 
+                todasAsRuasMap[rua.id] = { obj: rua, layer: rect };
+                layerRuas.addLayer(rect);
 
-        function criarRetanguloVaga(vaga, isNova) {
-            var corFill = isNova ? '#f1c40f' : '#2ecc71';
-            if (vaga.status === 'ocupada') corFill = '#e74c3c';
-
-            var rect = L.rectangle(vaga.coords, {
-                color: '#ffffff',
-                weight: 1,
-                fillColor: corFill,
-                fillOpacity: 0.5
-            });
-
-            rect.vagaObj = vaga; // Salvar objeto da vaga no retângulo
-
-            rect.bindTooltip(vaga.id);
-
-            todasAsVagasMap[vaga.id] = { obj: vaga, layer: rect };
-            layerVagas.addLayer(rect);
-
-            // Ao clicar no retângulo, se for modo de análise, abre o popup com os dados
-            rect.on('click', function (e) {
-                if (modoAtual === 'analisar') {
-                    abrirPopupVaga(vaga.id);
-                    L.DomEvent.stopPropagation(e); // Previne que o clique dispare no mapa
-                }
-            });
-        }
-
-        function criarRetanguloRua(rua, isNova) {
-            var rect = L.rectangle(rua.coords, {
-                color: '#ecf0f1',
-                weight: 2,
-                fillColor: '#7f8c8d', // Cor cinza para a rua 
-                fillOpacity: 0.8
-            });
-
-            rect.ruaObj = rua;
-
-            let rotuloTooltip = "R-" + rua.id + " (Tipo: " + rua.tipo + ")";
-            rect.bindTooltip(rotuloTooltip);
-
-            todasAsRuasMap[rua.id] = { obj: rua, layer: rect };
-            layerRuas.addLayer(rect);
-
-            // Ao clicar no retângulo da rua
-            rect.on('click', function (e) {
-                if (modoAtual === 'analisar_rua') {
-                    abrirPopupRua(rua.id);
-                    L.DomEvent.stopPropagation(e);
-                }
-            });
-        }
+                // Ao clicar no retângulo da rua
+                rect.on('click', function (e) {
+                    if (modoAtual === 'analisar_rua') {
+                        abrirPopupRua(rua.id);
+                        L.DomEvent.stopPropagation(e);
+                    }
+                });
+            }
 
 
-        function abrirPopupVaga(id) {
-            var vagaInfo = todasAsVagasMap[id];
-            if (!vagaInfo) return;
+            function abrirPopupVaga(id) {
+                var vagaInfo = todasAsVagasMap[id];
+                if (!vagaInfo) return;
 
-            var v = vagaInfo.obj;
-            var infoPopup = `
+                var v = vagaInfo.obj;
+                var infoPopup = `
             <div style="font-size: 13px; min-width: 140px;">
                 <h4 style="margin:0 0 5px 0; border-bottom: 1px solid #ccc; padding-bottom:3px;">Vaga: ${v.id}</h4>
                 <b>Status:</b> ${v.status === 'disponivel' ? '<span style="color:green;">Disponível</span>' : '<span style="color:red;">Ocupada</span>'}<br>
@@ -440,15 +620,15 @@
             </div>
         `;
 
-            vagaInfo.layer.bindPopup(infoPopup).openPopup();
-        }
+                vagaInfo.layer.bindPopup(infoPopup).openPopup();
+            }
 
-        function abrirPopupRua(id) {
-            var ruaInfo = todasAsRuasMap[id];
-            if (!ruaInfo) return;
+            function abrirPopupRua(id) {
+                var ruaInfo = todasAsRuasMap[id];
+                if (!ruaInfo) return;
 
-            var r = ruaInfo.obj;
-            var infoPopup = `
+                var r = ruaInfo.obj;
+                var infoPopup = `
             <div style="font-size: 13px; min-width: 140px;">
                 <h4 style="margin:0 0 5px 0; border-bottom: 1px solid #ccc; padding-bottom:3px;">Rua: R-${r.id}</h4>
                 <b>Direção/Tipo:</b> ${r.tipo}<br>
@@ -459,183 +639,419 @@
             </div>
         `;
 
-            ruaInfo.layer.bindPopup(infoPopup).openPopup();
-        }
-
-        // Funções de interação do popup
-        window.alterarStatus = function (id) {
-            var vagaInfo = todasAsVagasMap[id];
-            if (vagaInfo) {
-                vagaInfo.obj.status = vagaInfo.obj.status === 'disponivel' ? 'ocupada' : 'disponivel';
-                vagaInfo.layer.setStyle({ fillColor: vagaInfo.obj.status === 'disponivel' ? '#2ecc71' : '#e74c3c' });
-                abrirPopupVaga(id); // Atualiza o popup
+                ruaInfo.layer.bindPopup(infoPopup).openPopup();
             }
-        }
 
-        window.removerVaga = function (id) {
-            if (confirm("Tem certeza que deseja remover a vaga " + id + "?")) {
+            function abrirPopupObstaculo(id) {
+                var obsInfo = todosOsObstaculosMap[id];
+                if (!obsInfo) return;
+
+                var r = obsInfo.obj;
+                var infoPopup = `
+            <div style="font-size: 13px; min-width: 140px;">
+                <h4 style="margin:0 0 5px 0; border-bottom: 1px solid #ccc; padding-bottom:3px;">Obstáculo: O-${r.id}</h4>
+                <b>X:</b> ${r.coords[0][1]} ↔ ${r.coords[1][1]}<br>
+                <b>Y:</b> ${r.coords[0][0]} ↔ ${r.coords[1][0]}<br>
+                <hr style="margin: 8px 0;">
+                <button class="btn-limpar" onclick="removerObstaculo('${r.id}')" style="font-size:11px; padding:4px;">Remover Obstáculo</button>
+            </div>
+            `;
+
+                obsInfo.layer.bindPopup(infoPopup).openPopup();
+            }
+
+            // Funções de interação do popup
+            window.alterarStatus = function (id) {
                 var vagaInfo = todasAsVagasMap[id];
                 if (vagaInfo) {
-                    layerVagas.removeLayer(vagaInfo.layer);
-                    delete todasAsVagasMap[id];
-                    map.closePopup();
+                    vagaInfo.obj.status = vagaInfo.obj.status === 'disponivel' ? 'ocupada' : 'disponivel';
+                    vagaInfo.layer.setStyle({ fillColor: vagaInfo.obj.status === 'disponivel' ? '#2ecc71' : '#e74c3c' });
+                    abrirPopupVaga(id); // Atualiza o popup
                 }
             }
-        }
 
-        window.removerRua = function (id) {
-            if (confirm("Tem certeza que deseja remover a rua R-" + id + "?")) {
-                var ruaInfo = todasAsRuasMap[id];
-                if (ruaInfo) {
-                    layerRuas.removeLayer(ruaInfo.layer);
-                    delete todasAsRuasMap[id];
-                    map.closePopup();
+            window.removerVaga = function (id) {
+                if (confirm("Tem certeza que deseja remover a vaga " + id + "?")) {
+                    var vagaInfo = todasAsVagasMap[id];
+                    if (vagaInfo) {
+                        layerVagas.removeLayer(vagaInfo.layer);
+                        delete todasAsVagasMap[id];
+                        map.closePopup();
+                    }
                 }
             }
-        }
+
+            window.removerRua = function (id) {
+                if (confirm("Tem certeza que deseja remover a rua R-" + id + "?")) {
+                    var ruaInfo = todasAsRuasMap[id];
+                    if (ruaInfo) {
+                        layerRuas.removeLayer(ruaInfo.layer);
+                        delete todasAsRuasMap[id];
+                        map.closePopup();
+                    }
+                }
+            }
+
+            window.removerObstaculo = function (id) {
+                if (confirm("Tem certeza que deseja remover o obstáculo O-" + id + "?")) {
+                    var obsInfo = todosOsObstaculosMap[id];
+                    if (obsInfo) {
+                        layerObstaculos.removeLayer(obsInfo.layer);
+                        delete todosOsObstaculosMap[id];
+                        map.closePopup();
+                    }
+                }
+            }
 
 
-        function renderizarVagas(listaVagas) {
-            listaVagas.forEach(function (vaga) {
-                criarRetanguloVaga(vaga, false);
+            function renderizarVagas(listaVagas) {
+                listaVagas.forEach(function (vaga) {
+                    criarRetanguloVaga(vaga, false);
+                });
+            }
+
+            function renderizarRuas(listaRuas) {
+                listaRuas.forEach(function (rua) {
+                    criarRetanguloRua(rua, false);
+                });
+            }
+
+            function renderizarObstaculos(listaObstaculos) {
+                listaObstaculos.forEach(function (obs) {
+                    criarRetanguloObstaculo(obs);
+                });
+            }
+
+            renderizarVagas(vagasIniciais);
+            renderizarRuas(ruasIniciais);
+            renderizarObstaculos(obstaculosIniciais);
+
+
+            // 4. Lógica de Modos e Criação Dinâmica (agora unificada para Rua e Vaga)
+            var modoAtual = 'analisar'; // 'analisar', 'adicionar_rua', 'analisar_rua'
+            var outputTextarea = document.getElementById('json-output');
+            var outputTextareaRuas = document.getElementById('json-output-ruas');
+
+            window.setModo = function (modo) {
+                modoAtual = modo;
+
+                // Remove ativos
+                document.getElementById('btn-analisar').classList.remove('active-mode');
+                document.getElementById('btn-add-rua').classList.remove('active-mode');
+                var btnBloco = document.getElementById('btn-add-bloco');
+                if (btnBloco) btnBloco.classList.remove('active-mode');
+                document.getElementById('btn-analisar-rua').classList.remove('active-mode');
+
+                // Esconde ajudas
+                document.getElementById('help-analisar').style.display = 'none';
+                document.getElementById('opcoes-rua').style.display = 'none';
+                document.getElementById('help-analisar-rua').style.display = 'none';
+
+                // Ativa o corrente
+                if (modo === 'analisar') {
+                    document.getElementById('btn-analisar').classList.add('active-mode');
+                    document.getElementById('help-analisar').style.display = 'block';
+                } else if (modo === 'adicionar_rua') {
+                    document.getElementById('btn-add-rua').classList.add('active-mode');
+                    document.getElementById('opcoes-rua').style.display = 'block';
+                } else if (modo === 'adicionar_bloco_200') {
+                    document.getElementById('btn-add-bloco').classList.add('active-mode');
+                    document.getElementById('opcoes-rua').style.display = 'block';
+                } else if (modo === 'analisar_rua') {
+                    document.getElementById('btn-analisar-rua').classList.add('active-mode');
+                    document.getElementById('help-analisar-rua').style.display = 'block';
+                }
+            }
+
+            // Inicializa no modo de análise
+            setModo('analisar');
+
+            // CLIQUE NO MAPA (Criar rua se estiver nos modos de adicionar rua/bloco)
+            map.on('click', function (e) {
+                if (modoAtual !== 'adicionar_rua' && modoAtual !== 'adicionar_bloco_200') return;
+
+                var tipoSelecionado = document.getElementById('tipo-rua').value;
+
+                var y = Math.round(e.latlng.lat);
+                var x = Math.round(e.latlng.lng);
+
+                var tamanho = modoAtual === 'adicionar_bloco_200' ? 200 : 100;
+
+                // Define os bounds
+                var bounds = [
+                    [y, x],
+                    [y + tamanho, x + tamanho]
+                ];
+
+                var novoIdStr = String(contadorNovasRuas).padStart(2, '0');
+
+                var jsonGerado = {
+                    id: novoIdStr,
+                    coords: bounds,
+                    tipo: tipoSelecionado
+                };
+
+                criarRetanguloRua(jsonGerado, true);
+
+                outputTextareaRuas.value += JSON.stringify(jsonGerado) + ",\n";
+                outputTextareaRuas.scrollTop = outputTextareaRuas.scrollHeight;
+
+                contadorNovasRuas++;
             });
-        }
-
-        renderizarVagas(vagasIniciais);
 
 
-        // 4. Lógica de Modos e Criação Dinâmica (agora unificada para Rua e Vaga)
-        var modoAtual = 'analisar'; // 'analisar', 'adicionar_rua', 'analisar_rua'
-        var outputTextarea = document.getElementById('json-output');
-        var outputTextareaRuas = document.getElementById('json-output-ruas');
-
-        window.setModo = function (modo) {
-            modoAtual = modo;
-
-            // Remove ativos
-            document.getElementById('btn-analisar').classList.remove('active-mode');
-            document.getElementById('btn-add-rua').classList.remove('active-mode');
-            document.getElementById('btn-analisar-rua').classList.remove('active-mode');
-
-            // Esconde ajudas
-            document.getElementById('help-analisar').style.display = 'none';
-            document.getElementById('opcoes-rua').style.display = 'none';
-            document.getElementById('help-analisar-rua').style.display = 'none';
-
-            // Ativa o corrente
-            if (modo === 'analisar') {
-                document.getElementById('btn-analisar').classList.add('active-mode');
-                document.getElementById('help-analisar').style.display = 'block';
-            } else if (modo === 'adicionar_rua') {
-                document.getElementById('btn-add-rua').classList.add('active-mode');
-                document.getElementById('opcoes-rua').style.display = 'block';
-            } else if (modo === 'analisar_rua') {
-                document.getElementById('btn-analisar-rua').classList.add('active-mode');
-                document.getElementById('help-analisar-rua').style.display = 'block';
-            }
-        }
-
-        // Inicializa no modo de análise
-        setModo('analisar');
-
-        // CLIQUE NO MAPA (Criar rua se estiver no modo adicionar_rua)
-        map.on('click', function(e) {
-            if (modoAtual !== 'adicionar_rua') return; 
-
-            var tipoSelecionado = document.getElementById('tipo-rua').value;
-
-            var y = Math.round(e.latlng.lat);
-            var x = Math.round(e.latlng.lng);
-
-            // Tamanho 100x100 de rua
-            var bounds = [
-                [y, x],
-                [y + 100, x + 100]
-            ];
-            
-            var novoIdStr = String(contadorNovasRuas).padStart(2, '0');
-
-            var jsonGerado = {
-                id: novoIdStr,
-                coords: bounds,
-                tipo: tipoSelecionado
-            };
-
-            criarRetanguloRua(jsonGerado, true);
-
-            outputTextareaRuas.value += JSON.stringify(jsonGerado) + ",\n";
-            outputTextareaRuas.scrollTop = outputTextareaRuas.scrollHeight; 
-
-            contadorNovasRuas++;
-        });
-
-
-        window.abrirModal = function() {
-            document.getElementById('modal-x1').value = '';
-            document.getElementById('modal-x2').value = '';
-            document.getElementById('modal-y1').value = '';
-            document.getElementById('modal-y2').value = '';
-            document.getElementById('modal-adicionar').style.display = 'flex';
-        }
-
-        window.fecharModal = function() {
-            document.getElementById('modal-adicionar').style.display = 'none';
-        }
-
-        window.confirmarVagaModal = function () {
-            var x1 = parseInt(document.getElementById('modal-x1').value);
-            var x2 = parseInt(document.getElementById('modal-x2').value);
-            var y1 = parseInt(document.getElementById('modal-y1').value);
-            var y2 = parseInt(document.getElementById('modal-y2').value);
-
-            if (isNaN(x1) || isNaN(x2) || isNaN(y1) || isNaN(y2)) {
-                alert("Por favor, preencha todas as 4 coordenadas corretamente antes de adicionar a vaga.");
-                return;
+            window.abrirModal = function (tipoPadrao = 'vaga') {
+                document.getElementById('modal-x1').value = '';
+                document.getElementById('modal-x2').value = '';
+                document.getElementById('modal-y1').value = '';
+                document.getElementById('modal-y2').value = '';
+                document.getElementById('modal-tipo').value = tipoPadrao;
+                atualizarModalTipo();
+                document.getElementById('modal-adicionar').style.display = 'flex';
             }
 
-            // O Leaflet utiliza bounds na forma [[y1, x1], [y2, x2]]
-            // Usamos Math.min e Math.max para garantir os pontos de ínicio e fim corretamente desenhados
-            var bounds = [
-                [Math.min(y1, y2), Math.min(x1, x2)],
-                [Math.max(y1, y2), Math.max(x1, x2)]
-            ];
-
-            var novoId = 'V-' + String(contadorNovasVagas).padStart(2, '0');
-
-            // 2. Gera a estrutura JSON
-            var jsonGerado = {
-                id: novoId,
-                coords: bounds,
-                status: 'disponivel'
-            };
-
-            // 1. Desenha e armazena
-            criarRetanguloVaga(jsonGerado, true);
-
-            // 3. Adiciona na Textarea da interface para copiar colar
-            outputTextarea.value += JSON.stringify(jsonGerado) + ",\n";
-            outputTextarea.scrollTop = outputTextarea.scrollHeight; // Rola pro fim
-
-            contadorNovasVagas++;
-
-            fecharModal();
-        }
-
-        // Função do botão limpar painel JSON (Vagas)
-        window.limparPainel = function () {
-            if (confirm("Tem certeza que deseja limpar apenas o log JSON de VAGAS?")) {
-                outputTextarea.value = '';
+            window.atualizarModalTipo = function () {
+                var val = document.getElementById('modal-tipo').value;
+                if (val === 'rua') {
+                    document.getElementById('modal-subtipo-container').style.display = 'block';
+                } else {
+                    document.getElementById('modal-subtipo-container').style.display = 'none';
+                }
             }
-        }
 
-        // Função do botão limpar painel JSON (Ruas)
-        window.limparPainelRuas = function () {
-            if (confirm("Tem certeza que deseja limpar apenas o log JSON de RUAS?")) {
-                outputTextareaRuas.value = '';
+            window.fecharModal = function () {
+                document.getElementById('modal-adicionar').style.display = 'none';
             }
-        }
 
-    </script>
-</body>
+            window.confirmarElementoModal = function () {
+                var x1 = parseInt(document.getElementById('modal-x1').value);
+                var x2 = parseInt(document.getElementById('modal-x2').value);
+                var y1 = parseInt(document.getElementById('modal-y1').value);
+                var y2 = parseInt(document.getElementById('modal-y2').value);
+                var tipoC = document.getElementById('modal-tipo').value;
 
-</html>
+                if (isNaN(x1) || isNaN(x2) || isNaN(y1) || isNaN(y2)) {
+                    alert("Por favor, preencha todas as 4 coordenadas corretamente.");
+                    return;
+                }
+
+                var bounds = [
+                    [Math.min(y1, y2), Math.min(x1, x2)],
+                    [Math.max(y1, y2), Math.max(x1, x2)]
+                ];
+
+                if (tipoC === 'vaga') {
+                    var novoId = 'V-' + String(contadorNovasVagas).padStart(2, '0');
+                    var jsonV = { id: novoId, coords: bounds, status: 'disponivel' };
+                    criarRetanguloVaga(jsonV, true);
+                    outputTextarea.value += JSON.stringify(jsonV) + ",\n";
+                    outputTextarea.scrollTop = outputTextarea.scrollHeight;
+                    contadorNovasVagas++;
+                } else if (tipoC === 'rua') {
+                    var dirRua = document.getElementById('modal-subtipo-rua').value;
+                    var novoId = String(contadorNovasRuas).padStart(2, '0');
+                    var jsonR = { id: novoId, coords: bounds, tipo: dirRua };
+                    criarRetanguloRua(jsonR, true);
+                    outputTextareaRuas.value += JSON.stringify(jsonR) + ",\n";
+                    outputTextareaRuas.scrollTop = outputTextareaRuas.scrollHeight;
+                    contadorNovasRuas++;
+                } else if (tipoC === 'obstaculo') {
+                    var novoId = "O-" + String(contadorNovosObstaculos).padStart(2, '0');
+                    var jsonO = { id: novoId, coords: bounds, tipo: 'obstaculo' };
+                    criarRetanguloObstaculo(jsonO);
+                    outputTextareaRuas.value += JSON.stringify(jsonO) + ",\n";
+                    outputTextareaRuas.scrollTop = outputTextareaRuas.scrollHeight;
+                    contadorNovosObstaculos++;
+                }
+
+                fecharModal();
+            }
+
+            // Função do botão limpar painel JSON (Vagas)
+            window.limparPainel = function () {
+                if (confirm("Tem certeza que deseja limpar apenas o log JSON de VAGAS?")) {
+                    outputTextarea.value = '';
+                }
+            }
+
+            // Função do botão limpar painel JSON (Ruas)
+            window.limparPainelRuas = function () {
+                if (confirm("Tem certeza que deseja limpar apenas o log JSON de RUAS?")) {
+                    outputTextareaRuas.value = '';
+                }
+            }
+
+            // --- SISTEMA DE MATRIZ MATEMÁTICA ---
+            window.abrirModalMatriz = function () {
+                document.getElementById('modal-matriz').style.display = 'flex';
+            }
+
+            window.fecharModalMatriz = function () {
+                document.getElementById('modal-matriz').style.display = 'none';
+            }
+
+            window.baixarMatriz = function () {
+                var resolucao = parseInt(document.getElementById('matriz-resolucao').value);
+                if (isNaN(resolucao) || resolucao < 1) {
+                    alert("Por favor, insira uma resolução válida (mínimo 1).");
+                    return;
+                }
+
+                var formato = document.getElementById('matriz-formato').value;
+                var recortar = document.getElementById('matriz-recortar').checked;
+
+                let minY = 3000;
+                let maxY = 0;
+                let minX = 2000;
+                let maxX = 0;
+                let temElementos = false;
+
+                if (recortar) {
+                    // Encontrar a "caixa" de todos os elementos desenhados
+                    let todosElementos = [...Object.values(todasAsRuasMap), ...Object.values(todasAsVagasMap), ...Object.values(todosOsObstaculosMap)];
+
+                    if (todosElementos.length === 0) {
+                        alert("O mapa está vazio! Não há elementos para gerar a matriz recortada.");
+                        return;
+                    }
+
+                    todosElementos.forEach(info => {
+                        let c = info.obj.coords;
+                        minY = Math.min(minY, c[0][0], c[1][0]);
+                        maxY = Math.max(maxY, c[0][0], c[1][0]);
+                        minX = Math.min(minX, c[0][1], c[1][1]);
+                        maxX = Math.max(maxX, c[0][1], c[1][1]);
+                    });
+
+                    // Dá uma "folga" ou "padding" em volta (ex: equivalente a 3 blocos da resolução)
+                    let padding = resolucao * 3;
+                    minY = Math.max(0, minY - padding);
+                    maxY = Math.min(3000, Math.ceil(maxY) + padding);
+                    minX = Math.max(0, minX - padding);
+                    maxX = Math.min(2000, Math.ceil(maxX) + padding);
+                } else {
+                    minY = 0;
+                    maxY = 3000;
+                    minX = 0;
+                    maxX = 2000;
+                }
+
+                const rows = Math.ceil((maxY - minY) / resolucao);
+                const cols = Math.ceil((maxX - minX) / resolucao);
+
+                // 0 para fundo vazio (espaço não desenhado)
+                let matriz = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+                function setarValoresMatriz(coords, valor) {
+                    let y1 = Math.min(coords[0][0], coords[1][0]);
+                    let y2 = Math.max(coords[0][0], coords[1][0]);
+                    let x1 = Math.min(coords[0][1], coords[1][1]);
+                    let x2 = Math.max(coords[0][1], coords[1][1]);
+
+                    // Calcular índices considerando o possível recorte (minY e minX)
+                    let startR = Math.floor((y1 - minY) / resolucao);
+                    let endR = Math.min(rows - 1, Math.floor((y2 - minY) / resolucao));
+                    let startC = Math.floor((x1 - minX) / resolucao);
+                    let endC = Math.min(cols - 1, Math.floor((x2 - minX) / resolucao));
+
+                    // Previne bugs de memory/bounds
+                    startR = Math.max(0, startR);
+                    startC = Math.max(0, startC);
+
+                    for (let r = startR; r <= endR; r++) {
+                        for (let c = startC; c <= endC; c++) {
+                            matriz[r][c] = valor;
+                        }
+                    }
+                }
+
+                function preencherMatrizVagasEObstaculos(elementosMap, valorMatriz) {
+                    Object.values(elementosMap).forEach(info => {
+                        setarValoresMatriz(info.obj.coords, valorMatriz);
+                    });
+                }
+
+                function preencherMatrizRuas(elementosMap) {
+                    Object.values(elementosMap).forEach(info => {
+                        let tipoRua = info.obj.tipo;
+                        let valorMatriz = 1; // Default
+                        if (tipoRua === '1') valorMatriz = 1; // Norte
+                        else if (tipoRua === '2') valorMatriz = 2; // Sul
+                        else if (tipoRua === '3') valorMatriz = 3; // Leste
+                        else if (tipoRua === '4') valorMatriz = 4; // Oeste
+                        else if (tipoRua === '5') valorMatriz = 5; // Norte e Sul
+                        else if (tipoRua === 'curva') valorMatriz = 6; // Curva
+
+                        setarValoresMatriz(info.obj.coords, valorMatriz);
+                    });
+                }
+
+                // A ordem dita a sobreposição
+                preencherMatrizRuas(todasAsRuasMap);
+                preencherMatrizVagasEObstaculos(todasAsVagasMap, 8); // 8 para Vaga
+                preencherMatrizVagasEObstaculos(todosOsObstaculosMap, 9); // 9 para Obstáculo, sobrepondo o que tiver embaixo
+
+                var conteudoStr = "";
+                var mimeType = "text/plain";
+                var fileName = "matriz_estacionamento." + formato;
+
+                if (formato === 'json') {
+                    // Estrutura rica em metadados para desenvolvedores de GPS lerem
+                    let saidaParaGps = {
+                        metadata: {
+                            resolucao_pixels: resolucao,
+                            bbox_y_min: minY,
+                            bbox_x_min: minX,
+                            grid_rows: rows,
+                            grid_cols: cols,
+                            como_utilizar: "Para converter um (row, col) da matriz de volta pro mapa 2D: y = bbox_y_min + (row * resolucao_pixels)",
+                            legendas: {
+                                "0": "Fundo Vazio / Não mapeado",
+                                "1": "Rua - Norte (Cima)",
+                                "2": "Rua - Sul (Baixo)",
+                                "3": "Rua - Leste (Direita)",
+                                "4": "Rua - Oeste (Esquerda)",
+                                "5": "Rua - Norte e Sul (Dupla Vertical)",
+                                "6": "Rua - Curva",
+                                "8": "Vaga de Estacionamento",
+                                "9": "Parede / Obstáculo Fixo"
+                            }
+                        },
+                        matriz: matriz
+                    };
+                    conteudoStr = JSON.stringify(saidaParaGps, null, 2); // salva indentadinho
+                    mimeType = "application/json";
+                } else {
+                    let linhasTxt = [];
+                    if (recortar) {
+                        linhasTxt.push(`[ INFO CROP / GPS ] BASE_Y: ${minY} | BASE_X: ${minX} | MATRIZ_LINHAS: ${rows} | MATRIZ_COLUNAS: ${cols}`);
+                    }
+                    linhasTxt.push("[ LEGENDA GPS ] 0=Fundo | 1=Norte | 2=Sul | 3=Leste | 4=Oeste | 5=Norte/Sul | 6=Curva | 8=Vaga | 9=Parede");
+                    linhasTxt.push("===================================================================================");
+
+                    for (let r = rows - 1; r >= 0; r--) {
+                        linhasTxt.push(matriz[r].join("")); // Desenho perfeitamente comprimido
+                    }
+                    conteudoStr = linhasTxt.join("\n");
+                    fileName = "matriz_estacionamento.txt";
+                }
+
+                var blob = new Blob([conteudoStr], { type: mimeType });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                fecharModalMatriz();
+            }
+
+        </script>
+    </body>
+
+    </html>
+    message.txt
+    39 KB
