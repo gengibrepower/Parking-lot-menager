@@ -1,0 +1,48 @@
+Geração de Matriz para API de GPS
+Este plano de implementação foca na parte mais crítica do projeto: a Geração da Matriz para a API do GPS. Vamos ajustar a lógica para garantir que cada elemento distinto do mapa tenha seu próprio número ID exclusivo na matriz exportada, especialmente as diferentes direções das ruas.
+
+Descrição do Objetivo
+Aprimorar o recurso de geração de matrizes para oferecer suporte nativo a algoritmos avançados de rotas de GPS. Atualmente, todas as ruas são mapeadas apenas para o número 1. Atualizaremos a lógica para mapear diferentes direções (Cima/Norte, Baixo/Sul, etc.) para IDs separados e manteremos uma escala clara e uma legenda que representa as dimensões reais do ambiente.
+
+Revisão do Usuário Necessária
+IMPORTANT
+
+Por favor, revise a nova estrutura de mapeamento cuidadosamente, pois esta matriz será lida pelo seu algoritmo de GPS no backend/API.
+
+Mapeamento Proposto (A Legenda)
+Adotaremos a seguinte representação numérica para distinguir com precisão as direções e os elementos:
+
+0: Fundo Vazio / Não Mapeado
+1: Rua - Direção Norte (Cima)
+2: Rua - Direção Sul (Baixo)
+3: Rua - Direção Leste (Direita)
+4: Rua - Direção Oeste (Esquerda)
+5: Rua - Direção Norte e Sul (Mão dupla vertical)
+6: Rua - Curva
+8: Vaga de Estacionamento
+9: Parede / Obstáculo Fixo
+(Nota: Estes números podem ser ajustados de acordo com a preferência do seu algoritmo, como por exemplo usar o valor 20 para Vagas e 30 para Obstáculos)
+
+Mudanças Propostas
+s.html
+Modificar a lógica Javascript de geração da matriz em window.baixarMatriz = function () {...}.
+
+Refatorar Lógica de Preenchimento da Matriz: Em vez de usar uma função genérica preencherMatriz(map, valor) onde todas as ruas caem como 1, nós vamos:
+
+Chamar o preenchimento de matrizes individualmente para objetos de restrição (Vagas e Obstáculos).
+Escrever uma função dedicada preencherMatrizRuas capaz de ler o parâmetro tipo de cada rua (1, 2, 3, 4, 5 ou curva) e designar o ID numérico correspondente (1 a 6) de forma dinâmica dentro da varredura na matriz.
+Atualizar Arquivo Final na API e os Metadados (Legenda):
+
+A saída exportada para o arquivo JSON evidenciará de forma explícita este novo dicionário na área saidaParaGps.metadata.legendas.
+Atualizar a legenda impressa do arquivo no formato Texto (.txt), para refletir as opções visuais exatas da via.
+Ajustar as descrições bbox_x_min e bbox_y_min para garantir que o programador que for usar a API entenda como converter e projetar de volta as coordenadas da matriz nos limites da escala (área 2000x3000).
+Perguntas em Aberto
+WARNING
+
+Você concorda com os números escolhidos para essa legenda? Ou acha melhor organizar algo como 11, 12, 13 para as direções, e talvez 25 para Vagas?
+
+Plano de Validação
+Verificação Automatizada e Manual
+Exportar e analisar a matriz nos formatos JSON e TXT contendo as ruas espalhadas em diferentes direções em todo cenário desenhado.
+Assegurar que blocos de vias da direção SUL resultem em uma célula local gravando o número 2, ao passo em que as estradas mapeadas para direção NORTE apontem o número 1.
+Confirmar se as legendas geradas nos arquivos de metadados listam claramente a identificação base de cada componente gerado na planilha de exportação.
