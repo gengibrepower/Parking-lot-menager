@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMPS - Painel Admin</title>
+    
+    <!-- Link FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap grid system barely needed now, but keeping for layout basics -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+    <!-- Drawer do menu -->
+    <div class="drawer" id="drawer">
+        <nav>
+            <a href="index.html" data-index="01">Home</a>
+            <a href="#" data-index="02">Estacionamentos</a>
+            <a href="#" data-index="03">Funcionalidades</a>
+            <a href="#" data-index="04">Sobre</a>
+            <a href="hub_dono.html" data-index="05">Área do dono</a>
+            <a href="admin.html" data-index="06">Área Admin</a>
+        </nav>
+    </div>
+
+    <!-- Header modificado para sempre ter fundo fixo na área admin -->
+    <div class="header scrolled" style="background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.04);">
+        <div class="menu" id="menuBtn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <div class="logo">
+            <h2>AMPS</h2>
+        </div>
+        <div class="cadastro">
+            <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">voltar</a>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="usuarios"><i class="fa-solid fa-users"></i> Usuários</button>
+            <button class="admin-tab" data-tab="carros"><i class="fa-solid fa-car"></i> Veículos / Carros</button>
+            <button class="admin-tab" data-tab="donos"><i class="fa-solid fa-building"></i> Dono Estacionamento</button>
+            <button class="admin-tab" data-tab="estacionamentos"><i class="fa-solid fa-map-location-dot"></i> Estacionamentos</button>
+        </div>
+        
+        <div id="aba-usuarios" class="tab-content active">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                    <h2 class="admin-title">Novo Cliente</h2>
+                    <p class="admin-subtitle">Adicione credenciais de acesso.</p>
+                </div>
+                
+                <form id="formAdmin">
+                    <input type="hidden" id="idAtual" value="">
+                    
+                    <div class="form-group">
+                        <label for="nome" class="input-label">Nome do Cliente</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="nome" class="form-control" placeholder="Insira o nome completo" autocomplete="off">
+                            <i class="fa-solid fa-user form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="input-label">Endereço de E-mail</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" class="form-control" placeholder="Insira o e-mail" autocomplete="off">
+                            <i class="fa-solid fa-envelope form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senha" class="input-label">Senha de Acesso</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="senha" class="form-control" placeholder="Insira uma senha" autocomplete="new-password">
+                            <i class="fa-solid fa-lock form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status_usuario" class="input-label">Status da Conta</label>
+                        <div class="input-wrapper">
+                            <select id="status_usuario" class="form-select">
+                                <option value="ativo" selected>Ativo</option>
+                                <option value="inativo">Inativo</option>
+                            </select>
+                            <i class="fa-solid fa-power-off form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="text-danger mb-4 font-monospace text-center" id="msgForm" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                    
+                    <button type="button" id="btnAdicionar" class="btn-custom">
+                        <i class="fa-solid fa-user-plus"></i> Registrar Cliente
+                    </button>
+                </form>
+            </div>
+
+            <!-- Painel Direito: Lista -->
+            <div class="glass-card list-panel">
+                <div class="admin-header-text">
+                    <h2 class="admin-title">Gestão</h2>
+                    <p class="admin-subtitle">Clientes registrados no sistema do estacionamento.</p>
+                </div>
+                
+                <div id="listaClientes">
+                    <!-- Tabela de clientes será injetada aqui -->
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+        <div id="aba-carros" class="tab-content">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário Carro -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Novo Carro</h2>
+                        <p class="admin-subtitle">Designe uma Placa e Marca a um Proprietário.</p>
+                    </div>
+                    
+                    <form id="formCarro">
+                        <input type="hidden" id="idAtualCarro" value="">
+                        
+                        <div class="form-group">
+                            <label for="placa" class="input-label">Placa do Veículo (Maiúscula)</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="placa" class="form-control" placeholder="ABC-1234" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                                <i class="fa-solid fa-hashtag form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="proprietario" class="input-label">Opção de Usuário (Dono)</label>
+                            <div class="input-wrapper">
+                                <select id="proprietario" class="form-select">
+                                    <!-- Options serão carregados dinamicamente via JS -->
+                                </select>
+                                <i class="fa-solid fa-circle-user form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="marca" class="input-label">Marca do Carro</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="marca" class="form-control" placeholder="Toyota, Ford..." autocomplete="off">
+                                <i class="fa-solid fa-car-side form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="text-danger mb-4 font-monospace text-center" id="msgFormCarro" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                        
+                        <button type="button" id="btnAdicionarCarro" class="btn-custom">
+                            <i class="fa-solid fa-plus"></i> Registrar Carro
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Painel Direito: Lista Carro -->
+                <div class="glass-card list-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Frota</h2>
+                        <p class="admin-subtitle">Veículos registrados pertencentes aos clientes.</p>
+                    </div>
+                    
+                    <div id="listaCarros">
+                        <!-- Tabela de carros será injetada aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aba-donos" class="tab-content">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário Dono -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Novo Dono</h2>
+                        <p class="admin-subtitle">Cadastre proprietários de estacionamentos (B2B).</p>
+                    </div>
+                    
+                    <form id="formDono">
+                        <input type="hidden" id="idAtualDono" value="">
+                        
+                        <div class="form-group">
+                            <label for="razao" class="input-label">Razão Social</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="razao" class="form-control" placeholder="Empresa S/A" autocomplete="off">
+                                <i class="fa-solid fa-building form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cnpj" class="input-label">CNPJ</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="cnpj" class="form-control" placeholder="00.000.000/0001-00" autocomplete="off">
+                                <i class="fa-solid fa-id-card form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emailDono" class="input-label">E-mail Comercial</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="emailDono" class="form-control" placeholder="contato@empresa.com" autocomplete="off">
+                                <i class="fa-solid fa-envelope form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status_dono" class="input-label">Status da Parceria</label>
+                            <div class="input-wrapper">
+                                <select id="status_dono" class="form-select">
+                                    <option value="ativo" selected>Ativo</option>
+                                    <option value="inativo">Inativo</option>
+                                </select>
+                                <i class="fa-solid fa-power-off form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="text-danger mb-4 font-monospace text-center" id="msgFormDono" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                        
+                        <button type="button" id="btnAdicionarDono" class="btn-custom">
+                            <i class="fa-solid fa-plus"></i> Registrar Dono
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Painel Direito: Lista Dono -->
+                <div class="glass-card list-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Gerenciar B2B</h2>
+                        <p class="admin-subtitle">Sócios e donos de terrenos associados.</p>
+                    </div>
+                    
+                    <div id="listaDonos">
+                        <!-- Tabela será injetada aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aba-estacionamentos" class="tab-content">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário Estacionamento -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Novo Estacionamento</h2>
+                        <p class="admin-subtitle">Vincule terrenos e pátios aos donos.</p>
+                    </div>
+                    
+                    <form id="formEstacionamento">
+                        <input type="hidden" id="idAtualEstacionamento" value="">
+                        
+                        <div class="form-group">
+                            <label for="donoEstacionamento" class="input-label">Dono / Proprietário</label>
+                            <div class="input-wrapper">
+                                <select id="donoEstacionamento" class="form-select">
+                                    <option value="" disabled selected>Carregando Donos...</option>
+                                </select>
+                                <i class="fa-solid fa-building-user form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nomeEstacionamento" class="input-label">Nome do Estacionamento</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="nomeEstacionamento" class="form-control" placeholder="Pátio Central" autocomplete="off">
+                                <i class="fa-solid fa-map-pin form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="areaEstacionamento" class="input-label">Tamanho (Metros Quadrados)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="areaEstacionamento" class="form-control" placeholder="Ex: 500" autocomplete="off">
+                                <i class="fa-solid fa-ruler-combined form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="text-danger mb-4 font-monospace text-center" id="msgFormEstacionamento" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                        
+                        <button type="button" id="btnAdicionarEstacionamento" class="btn-custom">
+                            <i class="fa-solid fa-plus"></i> Registrar Estacionamento
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Painel Direito: Lista Estacionamentos -->
+                <div class="glass-card list-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Territórios B2B</h2>
+                        <p class="admin-subtitle">Controle de terrenos pertencentes à franqueados.</p>
+                    </div>
+                    
+                    <div id="listaEstacionamentos">
+                        <!-- Tabela será injetada aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de animação e drawer global -->
+    <script src="../js/script.js"></script>
+    <!-- Script do admin -->
+    <script src="../js/admin.js"></script>
+</body>
+</html>
