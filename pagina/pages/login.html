@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <form id="formulario"  action="pagina.html" method="get">
+            <h1>LOGIN</h1>
+
+            <div class="login-box">
+                <input id="user" placeholder="Usuário" type="email">
+                <i class="bx bxs-user"></i>
+            </div>
+
+            <div class="login-box">
+                <input id="password" placeholder="Senha" type="password">
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+
+            <div class="remember-pass">
+                <label>
+                    <input type="checkbox"> Lembrar senha
+                </label>
+                <a href="#">Esqueci senha</a>
+            </div>
+
+            <button id="btn" type="button" class="login">Login</button>
+
+            <p class="not-account">
+                Não tem conta? <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </form>
+    </div>
+</body>
+<script src="../js/login.js"></script>
+</html>

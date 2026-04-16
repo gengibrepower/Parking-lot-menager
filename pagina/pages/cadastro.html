@@ -1,93 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMPS Cadastro</title>
-    <link rel="stylesheet" href="../css/style.css">
-
+    <title>Cadastro - Intelligent Parking</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
-    <div class="header">
-        <div class="menu">
-            ☰
-        </div>
-        <div class="logo">
-            <h2>AMPS</h2>
-        </div>
-        <div class="cadastro">
-            <a href="#">login</a>
-            <a href="#">cadastro</a>
-        </div>
+
+    
+    <div class="container">
+        <form id="formulario-cadastro" action="pagina.html" method="get">
+            <h1>CADASTRO</h1>
+
+            <div class="login-box">
+                <input id="nome" placeholder="Nome Completo" type="text" required>
+                <i class="bx bxs-user-detail"></i>
+            </div>
+
+            <div class="login-box">
+                <input id="email" placeholder="E-mail" type="email" required>
+                <i class="bx bxs-envelope"></i>
+            </div>
+
+            <div class="login-box">
+                <input id="cpf" placeholder="CPF" type="text" required>
+                <i class="bx bxs-id-card"></i>
+            </div>
+
+            <div class="login-box">
+                <input id="senha" placeholder="Senha" type="password" required>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+
+            <div class="login-box">
+                <input id="confirmaSenha" placeholder="Confirmar Senha" type="password" required>
+                <i class="bx bxs-lock"></i>
+            </div>
+
+            <div class="account-type" style="display: flex; justify-content: space-around; margin: -5px 0 25px 0; font-size: 14px; color: var(--text-main);">
+                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                    <input type="radio" name="tipoConta" value="commom_user" id="tipoUser" checked> Usuário
+                </label>
+                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                    <input type="radio" name="tipoConta" value="p_admin" id="tipoAdmin"> Administrador
+                </label>
+            </div>
+
+            <button id="btn-cadastrar" type="button" class="login" style="margin-top: 5px;">Cadastrar</button>
+
+            <p class="not-account">
+                Já tem conta? <a href="#" id="btnJaTenhoConta">Faça login</a>
+            </p>
+        </form>
     </div>
-    <hr class="divisorcima">
-    <footer>
-        <div class="footer-cima">
-            <nav class="footer-nav">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="https://github.com/gengibrepower">Trabalhos</a></li>
-                <li><a href="/pagina principal">Sobre</a></li>
-                <li><a href="pesquisa.html">Estacionamentos</a></li>
-                <li><a href="editor_mapa.html">Área do dono</a></li>
-            </ul>
-            </nav>
-
-            <div class="footer-right">
-            <div class="footer-socials">
-                <ul>
-                <li>
-                    <a href="https://instagram.com" target="_blank" rel="noopener">
-                    ↗ Instagram
-                    </a>
-                </li>
-                <li>
-                    <a href="https://linkedin.com" target="_blank" rel="noopener">
-                    ↗ LinkedIn
-                    </a>
-                </li>
-                </ul>
-            </div>
-
-            <div class="footer-contatos">
-                <p>Novos projetos</p>
-                <a href="mailto:ola@felipegegembauer@gmail.com">felipegegembauer@gmail.com</a>
-            </div>
-            </div>
-        </div>
-
-        <div class="footer-baixo">
-            <!-- Newsletter -->
-            <div class="footer-novidades">
-            <p>Novidades (sem spam)</p>
-            <div class="newsletter-form">
-                <input type="email" placeholder="Seu e-mail" />
-                <button type="button">→</button>
-            </div>
-            </div>
-
-            <div class="footer-logo">
-            <!-- Substitua pelo SVG/logo do seu projeto -->
-            <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" fill="white">
-                <text
-                x="0" y="68"
-                font-family: "Baunk";
-                font-size="80"
-                font-weight="800"
-                letter-spacing="-4"
-                >AMPS</text>
-            </svg>
-            </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="footer-copyright">
-            <a href="/legal">Termos de uso</a>
-            <span>© 2026 — AMPS</span>
-        </div>
-    </footer>
-
-
-    <script src="../js/script.js"></script>
 </body>
+<script src="../js/login.js"></script>
 </html>

@@ -32,42 +32,6 @@ drawer.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeDrawer);
 });
 
-/* ── Funcionalidades: slides ── */
-
-const wrapper  = document.querySelector('.funcionalidades-wrapper');
-const slides   = document.querySelectorAll('.func-slide');
-const dots     = document.querySelectorAll('.func-dot');
-const total    = slides.length;
-let atual      = 0;
-let bloqueado  = false;
-
-function irParaSlide(index) {
-    if (index === atual) return;
-
-    slides[atual].classList.remove('ativo');
-    slides[atual].classList.add('saindo');
-    setTimeout(() => slides[atual].classList.remove('saindo'), 500);
-    dots[atual].classList.remove('ativo');
-
-    atual = index;
-
-    slides[atual].classList.add('ativo');
-    dots[atual].classList.add('ativo');
-}
-
-slides[0].classList.add('ativo');
-dots[0].classList.add('ativo');
-
-dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-        if (!wrapper) return;
-        const alturaSlide = (wrapper.offsetHeight - window.innerHeight) / total;
-        const topo = wrapper.offsetTop;
-        scrollAlvo = topo + i * alturaSlide;
-        scrollAlvo = Math.max(0, Math.min(scrollAlvo, document.documentElement.scrollHeight - window.innerHeight));
-    });
-});
-
 /* ── Scroll suavizado global ── */
 
 let scrollAlvo   = window.scrollY;
@@ -246,28 +210,4 @@ loginModalBtn.addEventListener('click', () => {
     });
 });
 
-/* ── Pesquisa ── */
-
-const inputPesquisa = document.getElementById('inputPesquisa');
-const btnPesquisa   = document.getElementById('btnPesquisa');
-
-function executarPesquisa() {
-    const termo = inputPesquisa.value.trim();
-    if (!termo) return;
-    localStorage.setItem('amps_pesquisa', termo);
-    // redirecionar futuramente: window.location.href = '/mapa?q=' + encodeURIComponent(termo);
-}
-
-btnPesquisa.addEventListener('click', executarPesquisa);
-
-inputPesquisa.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') executarPesquisa();
-});
-
 renderizarHeader();
-
-
-if (sessionStorage.getItem('amps_abrirLogin') === '1') {
-    sessionStorage.removeItem('amps_abrirLogin');
-    if (!getLogado()) abrirModal();
-}
