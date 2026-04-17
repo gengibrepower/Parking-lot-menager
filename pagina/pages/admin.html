@@ -50,6 +50,7 @@
             <button class="admin-tab" data-tab="carros"><i class="fa-solid fa-car"></i> Veículos / Carros</button>
             <button class="admin-tab" data-tab="donos"><i class="fa-solid fa-building"></i> Dono Estacionamento</button>
             <button class="admin-tab" data-tab="estacionamentos"><i class="fa-solid fa-map-location-dot"></i> Estacionamentos</button>
+            <button class="admin-tab" data-tab="vagas"><i class="fa-solid fa-parking"></i> Vagas</button>
         </div>
         
         <div id="aba-usuarios" class="tab-content active">
@@ -311,6 +312,94 @@
                     </div>
                     
                     <div id="listaEstacionamentos">
+                        <!-- Tabela será injetada aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aba-vagas" class="tab-content">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário Vaga -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Nova Vaga</h2>
+                        <p class="admin-subtitle">Ocupação e gestão de vagas.</p>
+                    </div>
+                    
+                    <form id="formVaga">
+                        <input type="hidden" id="idAtualVaga" value="">
+                        
+                        <div class="form-group">
+                            <label for="vagaEstacionamento" class="input-label">Estacionamento</label>
+                            <div class="input-wrapper">
+                                <select id="vagaEstacionamento" class="form-select">
+                                    <option value="" disabled selected>Carregando Estacionamentos...</option>
+                                </select>
+                                <i class="fa-solid fa-map-location-dot form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vagaCarro" class="input-label">Carro</label>
+                            <div class="input-wrapper">
+                                <select id="vagaCarro" class="form-select">
+                                    <option value="" disabled selected>Carregando Carros...</option>
+                                </select>
+                                <i class="fa-solid fa-car form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="vagaEntrada" class="input-label">Hora de Entrada</label>
+                            <div class="input-wrapper">
+                                <input type="datetime-local" id="vagaEntrada" class="form-control" autocomplete="off">
+                                <i class="fa-solid fa-clock form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vagaSaida" class="input-label">Hora de Saída</label>
+                            <div class="input-wrapper">
+                                <input type="datetime-local" id="vagaSaida" class="form-control" autocomplete="off">
+                                <i class="fa-regular fa-clock form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vagaSensor" class="input-label">Código do Sensor</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="vagaSensor" class="form-control" placeholder="EX: SENS-001" autocomplete="off">
+                                <i class="fa-solid fa-microchip form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vagaNumero" class="input-label">Número da Vaga</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="vagaNumero" class="form-control" placeholder="A1, B2..." autocomplete="off">
+                                <i class="fa-solid fa-hashtag form-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="text-danger mb-4 font-monospace text-center" id="msgFormVaga" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                        
+                        <button type="button" id="btnAdicionarVaga" class="btn-custom">
+                            <i class="fa-solid fa-plus"></i> Registrar Vaga
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Painel Direito: Lista Vagas -->
+                <div class="glass-card list-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Controle de Vagas</h2>
+                        <p class="admin-subtitle">Lista de vagas e status de ocupação.</p>
+                    </div>
+                    
+                    <div id="listaVagas">
                         <!-- Tabela será injetada aqui -->
                     </div>
                 </div>
