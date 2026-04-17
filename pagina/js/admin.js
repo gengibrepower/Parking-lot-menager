@@ -4,12 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
     verificaCarros();
     verificaDonos();
     verificaEstacionamentos();
+    verificaVagas();
     carregaRegistros();
     carregaRegistrosCarros();
     carregaRegistrosDonos();
     carregaRegistrosEstacionamentos();
+    carregaRegistrosVagas();
     popularSelectClientes();
     popularSelectDonos();
+    popularSelectEstacionamentos();
+    popularSelectCarrosParaVaga();
 
     // Lógica para navegação das Abas (Tabs)
     const tabs = document.querySelectorAll('.admin-tab');
@@ -195,6 +199,56 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("estacionamentos", JSON.stringify(estacs));
     });
 
+    // ==========================================
+    // LÓGICA DE VAGAS
+    // ==========================================
+    document.getElementById("btnAdicionarVaga").addEventListener("click", () => {
+        var estacIndex = document.getElementById("vagaEstacionamento").value;
+        var carroIndex = document.getElementById("vagaCarro").value;
+        var entrada = document.getElementById("vagaEntrada").value;
+        var saida = document.getElementById("vagaSaida").value;
+        var sensor = document.getElementById("vagaSensor").value;
+        var numero = document.getElementById("vagaNumero").value;
+
+        if(estacIndex == "" || carroIndex == "" || entrada == "" || sensor == "" || numero == ""){
+            document.getElementById("msgFormVaga").textContent = "Preencha todos os campos obrigatórios.";
+            return;
+        }
+
+        document.getElementById("msgFormVaga").textContent = "";
+
+        // Pegamos detalhes
+        var estacs = JSON.parse(localStorage.getItem("estacionamentos"));
+        var nomeEstacionamento = estacs[estacIndex].nome;
+
+        var carros = JSON.parse(localStorage.getItem("carros"));
+        var placaCarro = carros[carroIndex].placa;
+
+        var objVaga = {
+            idEstacionamento: estacIndex,
+            nomeEstacionamento: nomeEstacionamento,
+            idCarro: carroIndex,
+            placaCarro: placaCarro,
+            entrada: entrada,
+            saida: saida,
+            sensor: sensor,
+            numero: numero
+        };
+
+        var vagas = JSON.parse(localStorage.getItem("vagas"));
+        var idAtualVaga = document.getElementById("idAtualVaga").value;
+        
+        if(idAtualVaga !== "") {
+            vagas[idAtualVaga] = objVaga;
+            window.location.href = url + "?tab=vagas";
+        } else {
+            vagas.push(objVaga);
+            window.location.href = url + "?tab=vagas";
+        }
+        
+        localStorage.setItem("vagas", JSON.stringify(vagas));
+    });
+
     // Se estivermos recarregando com aba especifica
     if (parametros.get("tab") === "carros" || tipo === "carro") {
         document.querySelector('[data-tab="carros"]').click();
@@ -202,6 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('[data-tab="donos"]').click();
     } else if (parametros.get("tab") === "estacionamentos" || tipo === "estacionamento") {
         document.querySelector('[data-tab="estacionamentos"]').click();
+    } else if (parametros.get("tab") === "vagas" || tipo === "vaga") {
+        document.querySelector('[data-tab="vagas"]').click();
     }
 });
 
@@ -230,6 +286,13 @@ function verificaEstacionamentos(){
     var estacs = localStorage.getItem("estacionamentos");
     if(estacs == null){
         localStorage.setItem("estacionamentos", JSON.stringify([]));
+    }
+}
+
+function verificaVagas(){
+    var vagas = localStorage.getItem("vagas");
+    if(vagas == null){
+        localStorage.setItem("vagas", JSON.stringify([]));
     }
 }
 
@@ -262,6 +325,40 @@ function popularSelectDonos(){
     let options = '<option value="" disabled selected>Selecione um Dono...</option>';
     donos.forEach((dono, index) => {
         options += `<option value="${index}">${dono.razao} (${dono.cnpj})</option>`;
+    });
+
+    select.innerHTML = options;
+}
+
+function popularSelectEstacionamentos(){
+    var estacs = JSON.parse(localStorage.getItem("estacionamentos"));
+    var select = document.getElementById("vagaEstacionamento");
+    
+    if(!estacs || estacs.length == 0){
+        select.innerHTML = '<option value="">Nenhum estacionamento cadastrado</option>';
+        return;
+    }
+
+    let options = '<option value="" disabled selected>Selecione um Estacionamento...</option>';
+    estacs.forEach((estac, index) => {
+        options += `<option value="${index}">${estac.nome}</option>`;
+    });
+
+    select.innerHTML = options;
+}
+
+function popularSelectCarrosParaVaga(){
+    var carros = JSON.parse(localStorage.getItem("carros"));
+    var select = document.getElementById("vagaCarro");
+    
+    if(!carros || carros.length == 0){
+        select.innerHTML = '<option value="">Nenhum carro cadastrado</option>';
+        return;
+    }
+
+    let options = '<option value="" disabled selected>Selecione um Carro...</option>';
+    carros.forEach((carro, index) => {
+        options += `<option value="${index}">${carro.placa}</option>`;
     });
 
     select.innerHTML = options;
@@ -535,6 +632,74 @@ function carregaRegistrosEstacionamentos(){
     document.getElementById("listaEstacionamentos").innerHTML = tabelaFinal;
 }
 
+function carregaRegistrosVagas(){
+    var vagas = JSON.parse(localStorage.getItem("vagas"));
+
+    if(!vagas || vagas.length == 0){
+        document.getElementById("listaVagas").innerHTML =
+            `<div class="text-center text-muted py-5" style="color: rgba(255,255,255,0.3) !important;">
+                <i class="fa-solid fa-parking fa-3x mb-3" style="opacity: 0.2;"></i>
+                <p style="font-family: 'Markl', monospace; letter-spacing: 1px;">Nenhuma vaga registrada.</p>
+             </div>`;
+        return;
+    }
+
+    var tabelaP1 = `<div class="table-container mt-2">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Vaga/Sensor</th>
+                            <th>Carro</th>
+                            <th>Tempo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+    var tabelaP2 = `</tbody>
+                    </table>
+                    </div>`;
+
+    var tabelaMeio = "";
+    vagas.forEach((item, index) => {
+        let iniciaisVaga = item.numero ? item.numero.substring(0, 2).toUpperCase() : "--";
+        let tempoStr = `In: ${new Date(item.entrada).toLocaleString()}`;
+        if(item.saida) tempoStr += `<br>Out: ${new Date(item.saida).toLocaleString()}`;
+        
+        tabelaMeio += `<tr>
+                            <td>
+                                <div class="client-name-cell">
+                                    <div class="avatar-initial" style="width: 36px; height: 36px; font-size: 0.85rem; margin-right: 12px; background: rgba(52, 152, 219, 0.15); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.3);">${iniciaisVaga}</div>
+                                    <div>
+                                        <strong style="letter-spacing: 1px; color: #fff; font-size: 0.90rem;">Vaga: ${item.numero}</strong>
+                                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Estac: ${item.nomeEstacionamento}</div>
+                                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Cod: ${item.sensor}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong style="color: rgba(255,255,255,0.8);">${item.placaCarro}</strong>
+                            </td>
+                            <td>
+                                <span style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">${tempoStr}</span>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <a href='admin.html?id=${index}&tipo=vaga&acao=alterar' class="btn-action edit" title="Editar Vaga">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href='admin.html?id=${index}&acao=excluir&tipo=vaga' class="btn-action delete" title="Excluir Vaga">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>`;
+    });
+
+    var tabelaFinal = tabelaP1 + tabelaMeio + tabelaP2;
+    document.getElementById("listaVagas").innerHTML = tabelaFinal;
+}
+
 function executaAcao(acao, id, tipo, url) {
     if (!tipo) tipo = "usuario"; // fallback para evitar problemas sessões antigas
 
@@ -641,6 +806,34 @@ function executaAcao(acao, id, tipo, url) {
                 btnEstac.innerHTML = '<i class="fa-solid fa-check"></i> Salvar Estacionamento';
                 
                 document.getElementById("nomeEstacionamento").focus();
+            }
+        }
+    } else if (tipo === "vaga") {
+        var vagas = JSON.parse(localStorage.getItem("vagas"));
+        
+        if (acao === "excluir") {
+            if(confirm("Deseja deletar esta Vaga do sistema?")) {
+                vagas.splice(id, 1);
+                localStorage.setItem("vagas", JSON.stringify(vagas));
+            }
+            window.location.href = url + "?tab=vagas";
+            
+        } else if (acao === "alterar") {
+            document.querySelector('[data-tab="vagas"]').click();
+            var vaga = vagas[id];
+            if(vaga) {
+                document.getElementById("vagaEstacionamento").value = vaga.idEstacionamento;
+                document.getElementById("vagaCarro").value = vaga.idCarro;
+                document.getElementById("vagaEntrada").value = vaga.entrada;
+                document.getElementById("vagaSaida").value = vaga.saida || "";
+                document.getElementById("vagaSensor").value = vaga.sensor;
+                document.getElementById("vagaNumero").value = vaga.numero;
+                document.getElementById("idAtualVaga").value = id;
+                
+                let btnVaga = document.getElementById("btnAdicionarVaga");
+                btnVaga.innerHTML = '<i class="fa-solid fa-check"></i> Salvar Vaga';
+                
+                document.getElementById("vagaNumero").focus();
             }
         }
     }
