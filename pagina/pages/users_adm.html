@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMPS - Painel Admin</title>
+    
+    <!-- Link FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap grid system barely needed now, but keeping for layout basics -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+    <!-- Drawer do menu -->
+    <div class="drawer" id="drawer">
+        <nav>
+            <a href="index.html" data-index="01">Home</a>
+            <a href="#" data-index="02">Estacionamentos</a>
+            <a href="#" data-index="03">Funcionalidades</a>
+            <a href="#" data-index="04">Sobre</a>
+            <a href="hub_dono.html" data-index="05">Área do dono</a>
+            <a href="admin.html" data-index="06">Área Admin</a>
+        </nav>
+    </div>
+
+        <div class="header scrolled" style="background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.04);">
+        <div class="menu" id="menuBtn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <div class="logo">
+            <h2>AMPS</h2>
+        </div>
+        <div class="cadastro">
+            <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">voltar</a>
+        </div>
+    </div>
+
+    <nav class="admin-tabs" aria-label="Admin">
+
+        <a href="users_adm.html" class="admin-tab">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuários</span>
+            <span class="tab-count">0</span>
+        </a>
+
+        <a href="cars_adm.html" class="admin-tab">
+            <i class="fa-solid fa-car"></i>
+            <span>Veículos</span>
+            <span class="tab-count">0</span>
+        </a>
+
+        <a href="owners_adm.html" class="admin-tab">
+            <i class="fa-solid fa-building"></i>
+            <span>Donos</span>
+            <span class="tab-count">0</span>
+        </a>
+
+        <a href="lot_adm.html" class="admin-tab">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>Estacionamentos</span>
+            <span class="tab-count">0</span>
+        </a>
+
+        <a href="par_space_adm.html" class="admin-tab">
+            <i class="fa-solid fa-parking"></i>
+            <span>Vagas</span>
+            <span class="tab-count">0</span>
+        </a>
+
+    </nav>
+
+
+    <div class="container my-5">
+
+        <div id="aba-usuarios" class="tab-content active">
+            <div class="dashboard-grid">
+                
+                <!-- Painel Esquerdo: Formulário -->
+                <div class="glass-card form-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Novo Cliente</h2>
+                        <p class="admin-subtitle">Adicione credenciais de acesso.</p>
+                    </div>
+                    
+                    <form id="formAdmin">
+                        <input type="hidden" id="idAtual" value="">
+                        
+                        <div class="form-group">
+                            <label for="nome" class="input-label">Nome do Cliente</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="nome" class="form-control" placeholder="Insira o nome completo" autocomplete="off">
+                                <i class="fa-solid fa-user form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="input-label">Endereço de E-mail</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="email" class="form-control" placeholder="Insira o e-mail" autocomplete="off">
+                                <i class="fa-solid fa-envelope form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="senha" class="input-label">Senha de Acesso</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="senha" class="form-control" placeholder="Insira uma senha" autocomplete="new-password">
+                                <i class="fa-solid fa-lock form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status_usuario" class="input-label">Status da Conta</label>
+                            <div class="input-wrapper">
+                                <select id="status_usuario" class="form-select">
+                                    <option value="ativo" selected>Ativo</option>
+                                    <option value="inativo">Inativo</option>
+                                </select>
+                                <i class="fa-solid fa-power-off form-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="text-danger mb-4 font-monospace text-center" id="msgForm" style="font-size: 0.85rem; height: 1.2rem;"></div>
+                        
+                        <button type="button" id="btnAdicionar" class="btn-custom">
+                            <i class="fa-solid fa-user-plus"></i> Registrar Cliente
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Painel Direito: Lista -->
+                <div class="glass-card list-panel">
+                    <div class="admin-header-text">
+                        <h2 class="admin-title">Gestão</h2>
+                        <p class="admin-subtitle">Clientes registrados no sistema do estacionamento.</p>
+                    </div>
+                    
+                    <div id="listaClientes">
+                        <!-- Tabela de clientes será injetada aqui -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer>
+        <div class="footer-cima">
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="https://github.com/gengibrepower">Trabalhos</a></li>
+                    <li><a href="/pagina-principal">Sobre</a></li>
+                    <li><a href="pesquisa.html">Estacionamentos</a></li>
+                    <li><a href="hub_dono.html">Área do dono</a></li>
+                </ul>
+            </nav>
+            <div class="footer-right">
+                <div class="footer-socials">
+                    <ul>
+                        <li><a href="https://instagram.com" target="_blank" rel="noopener">↗ Instagram</a></li>
+                        <li><a href="https://linkedin.com" target="_blank" rel="noopener">↗ LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contatos">
+                    <p>Novos projetos</p>
+                    <a href="mailto:felipegegembauer@gmail.com">felipegegembauer@gmail.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-baixo">
+            <div class="footer-novidades">
+                <p>Novidades (sem spam)</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Seu e-mail" />
+                    <button type="button">→</button>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" fill="white">
+                    <text x="0" y="68" font-family="Baunk" font-size="80" font-weight="800" letter-spacing="-4">AMPS</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="footer-copyright">
+            <a href="/legal">Termos de uso</a>
+            <span>© 2026 — AMPS</span>
+        </div>
+    </footer>
+
+    <div class="login-modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <button class="login-modal-close" id="loginModalClose">✕</button>
+            <h2 class="login-modal-titulo">AMPS</h2>
+            <p class="login-modal-sub">Automated Management Parking System</p>
+
+            <div class="login-box-modal">
+                <input id="modalEmail" placeholder="E-mail" type="email" autocomplete="email">
+            </div>
+            <div class="login-box-modal">
+                <input id="modalSenha" placeholder="Senha" type="password" autocomplete="current-password">
+            </div>
+
+            <p class="login-modal-erro" id="loginErro"></p>
+
+            <button class="login-modal-btn" id="loginModalBtn">Entrar</button>
+
+            <p class="login-modal-rodape">
+                Não tem conta? <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/users_adm.js"></script>
+</body>
+</html>

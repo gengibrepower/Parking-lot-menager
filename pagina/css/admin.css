@@ -10,61 +10,73 @@
         /* Base Container */
         .admin-tabs {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
+            align-items: center;
+            gap: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 32px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .admin-tab {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--cinza);
-            padding: 12px 30px;
-            border-radius: 100px;
-            font-family: "Markl", monospace;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            padding: 12px 16px;
+            font-family: "Markl", monospace;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: var(--cinza);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: color 0.15s ease, border-color 0.15s ease;
         }
 
         .admin-tab:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
+            color: var(--branco);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
         }
 
         .admin-tab.active {
-            background: rgba(76, 175, 138, 0.15);
-            border-color: #4CAF8A;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(76, 175, 138, 0.2);
+            color: var(--branco);
+            border-bottom-color: var(--verde_accent);
+            font-weight: 600;
         }
 
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease;
+        .admin-tab i {
+            font-size: 14px;
         }
 
-        .tab-content.active {
-            display: block;
+        /* badge contador */
+        .admin-tab .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 18px;
+            padding: 0 6px;
+            font-size: 11px;
+            font-family: "Markl", monospace;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 100px;
+            color: var(--cinza);
+            transition: background 0.15s, color 0.15s;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-            align-items: start;
-            max-width: 1200px;
-            margin: 0 auto;
+        .admin-tab.active .tab-count {
+            background: rgba(20, 98, 69, 0.25);
+            color: var(--branco);
         }
 
         /* Card Styling */
