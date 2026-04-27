@@ -37,13 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
            cpf
         }
 
+        //adiciona a lista de usuarios 
+        adicionarHTML(nome, email, status, senha, cpf)
         //dou push do obj par array e mando a lista denovo para local storage (set)
         listaInformacoesUsuario.push(usuario)
         localStorage.setItem('usuarios', JSON.stringify(listaInformacoesUsuario))
     })
- 
+   
 
 })
+
+
 
 function verificarLista() {
     const lista = localStorage.getItem('usuarios')
@@ -58,11 +62,78 @@ function verificaUsuarioExistente(cpf) {
 }
 
 
+function adicionarHTML(nome, email, status, senha, cpf) {
+    const lista = document.getElementById('listaClientes');
+    let item = `
+        <li id="usuario-${cpf}">
+            ${nome} | CPF: ${cpf} | Email: ${email} | Status: ${status} | Senha: ${senha}
+            <button onclick="excluirUsuario('${cpf}')" class="btn-excluir">Excluir</button>
+            <button onclick="alterarUsuario('${cpf}')" class="btn-alterar">Alterar</button>
+        </li>`;
+    lista.innerHTML += item;
+}
+
+function excluirUsuario(cpf) {
+    if (!confirm(`Deseja excluir o usuário com CPF ${cpf}?`)) return;
+
+    
+    let lista = JSON.parse(localStorage.getItem('usuarios')) || [];
+    lista = lista.filter(usuario => usuario.cpf !== cpf);
+    localStorage.setItem('usuarios', JSON.stringify(lista));
+
+    // Remove do HTML
+    const item = document.getElementById(`usuario-${cpf}`);
+    if (item) item.remove();
+}
 
 
 
 
+//funcao alterar
+function alterarUsuario(cpf) {
+    let lista = JSON.parse(localStorage.getItem('usuarios')) || [];
+    let indice = lista.findIndex(u => u.cpf === cpf);
+    if (indice === -1) return;
 
+    let obj = lista[indice];
+
+    // Carrega os valores nos inputs do formulário
+    document.getElementById('nome').value = obj.nome;
+    document.getElementById('email').value = obj.email;
+    document.getElementById('senha').value = obj.senha;
+    document.getElementById('status_usuario').value = obj.status;
+
+    // Desabilita o botão adicionar e mostra o salvar
+    document.getElementById('btnAdicionar').disabled = true;
+    document.getElementById('btnSalvar').style.display = 'inline-block';
+
+    // Escuta o botão salvar
+    document.getElementById('btnSalvar').onclick = () => {
+        lista[indice].nome   = document.getElementById('nome').value;
+        lista[indice].email  = document.getElementById('email').value;
+        lista[indice].senha  = document.getElementById('senha').value;
+        lista[indice].status = document.getElementById('status_usuario').value;
+
+        localStorage.setItem('usuarios', JSON.stringify(lista));
+
+        // Atualiza o item na tela
+        const item = document.getElementById(`usuario-${cpf}`);
+        if (item) {
+            item.innerHTML = `
+                ${lista[indice].nome} | CPF: ${cpf} | Email: ${lista[indice].email} | Status: ${lista[indice].status} | Senha: ${lista[indice].senha}
+                <button onclick="excluirUsuario('${cpf}')" class="btn-excluir">Excluir</button>
+                <button onclick="alterarUsuario('${cpf}')" class="btn-alterar">Alterar</button>`;
+        }
+
+        // Reseta o formulário
+        document.getElementById('nome').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('senha').value = '';
+        document.getElementById('status_usuario').value = 'ativo';
+        document.getElementById('btnAdicionar').disabled = false;
+        document.getElementById('btnSalvar').style.display = 'none';
+    };
+}
 
 
 
