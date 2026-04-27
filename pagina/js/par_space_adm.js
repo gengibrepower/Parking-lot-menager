@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const vagaNumero = document.getElementById('vagaNumero').value
        
         
-        // Usa parse (transforma informacoes de string para  array) dou get no usuarios (array criado na funcao verificar lista)
+        // Usa parse para pegar a lista do localStorage para que seja um array e não string, se não tiver nada no localstorage, ele cria um array vazio
         let listaInformacoesVagas = JSON.parse(localStorage.getItem('vagas')) || []
 
-        // Cria obj (PASSO 2 PROVA, ADICIONAR AO OBJ O NOVO ID Q VC TROUXE)
+        // Colocar o obj com as novas informações aqui V
         let objVagas = {
             nomeEstacionamento,
             idCarro,
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         adicionarHTML(nomeEstacionamento,idCarro,vagaSensor,vagaNumero)
 
-        //dou push do obj par array e mando a lista denovo para local storage (set)
+        // Adiciona o obj na lista e salva no localstorage
         listaInformacoesVagas.push(objVagas)
         localStorage.setItem('vagas', JSON.stringify(listaInformacoesVagas))
 
@@ -38,14 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
  
 
 })
-
+// Verifica se a lista existe no localStorage, se não existir, cria uma lista vazia
 function verificarLista() {
     const lista = localStorage.getItem('vagas')
     if (lista == null) {
         localStorage.setItem('vagas', JSON.stringify([]))
     }
 }
-
+// Função para adicionar a vaga na tela, recebe os parâmetros do objVagas
 function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero) {
     const lista = document.getElementById('listaVagas');
     let item =` 
@@ -56,7 +56,7 @@ function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero) {
         </li>`;
     lista.innerHTML += item;
 }
-
+// Função para excluir a vaga, recebe o número da vaga como parâmetro
 function excluirVaga(vagaNumero) {
     if (!confirm(`Deseja excluir a vaga com Número ${vagaNumero}?`)) return;
 
@@ -70,7 +70,7 @@ function excluirVaga(vagaNumero) {
     if (item) item.remove();
 }
 
-//funcao alterar
+// Função para alterar a vaga, recebe o número da vaga como parâmetro
 function alterarVagas(vagaNumero) {
     let lista = JSON.parse(localStorage.getItem('vagas')) || [];
     let indice = lista.findIndex(u => u.vagaNumero === vagaNumero);
