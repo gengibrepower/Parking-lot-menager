@@ -316,7 +316,6 @@ body {
 }
 
 
-<<<<<<< Updated upstream
 /* Table Enhancements */
 
 .table-container {
@@ -655,8 +654,8 @@ table tbody tr:hover {
     border-color: rgba(220, 53, 69, 0.5);
     color: #fff;
 }
-=======
-        lista-clientes {
+
+lista-clientes {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -668,11 +667,9 @@ table tbody tr:hover {
     border-radius: 10px;
     padding: 12px 16px;
     margin-bottom: 10px;
-    
     color: var(--branco);
     font-size: 0.9rem;
     font-family: monospace;
-
     transition: all 0.2s ease;
 }
 
@@ -687,10 +684,11 @@ table tbody tr:hover {
     font-weight: 500;
 }
 
-        /* Responsiveness */
-        @media (max-width: 992px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
->>>>>>> Stashed changes
+
+/* Responsiveness */
+
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
