@@ -480,15 +480,6 @@ table tbody tr:hover {
 }
 
 
-/* Responsiveness */
-
-@media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-
 /* ── NOVO FORM (compatível com seu estilo antigo) ── */
 
 .field {
@@ -661,7 +652,7 @@ table tbody tr:hover {
     color: #fff;
 }
 
-lista-clientes {
+.lista-clientes {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -688,15 +679,6 @@ lista-clientes {
 .lista-clientes li strong {
     color: var(--cinza);
     font-weight: 500;
-}
-
-
-/* Responsiveness */
-
-@media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .listaVagas li {
