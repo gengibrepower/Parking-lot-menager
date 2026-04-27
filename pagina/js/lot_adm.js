@@ -84,13 +84,13 @@ function carregaRegistros() {
         tabelaMeio += `
         <div class="item">
         <div class="item-top">
-            <div>
-            <div class="item-name">${e.nomeEstacionamento}</div>
-            <div class="item-cnpj">CNPJ Dono: ${e.donoEstacionamento}</div>
+            <div class="titulo-adm-estacionamento">
+                <div class="item-name"><h3>${e.nomeEstacionamento}</h3></div>
+                <div class="item-cnpj"><h3>CNPJ Dono: ${e.donoEstacionamento}</h3></div>
             </div>
             <div class="item-actions">
-            <a href="?id=${i}&acao=alterar" class="item-btn-edit">✏ Editar</a>
-            <a href="?id=${i}&acao=excluir" class="item-btn-del">✕ Excluir</a>
+                <a href="?id=${i}&acao=alterar" class="item-btn-edit">✏ Editar</a>
+                <a href="?id=${i}&acao=excluir" class="item-btn-del">✕ Excluir</a>
             </div>
         </div>
         <div class="tags">
