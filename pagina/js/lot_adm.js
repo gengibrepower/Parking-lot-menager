@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var complementoEstacionamento = document.getElementById('complementoEstacionamento').value;
         var cidadeEstacionamento = document.getElementById('cidadeEstacionamento').value;
         var estadoEstacionamento = document.getElementById('estadoEstacionamento').value;
+        // NOVO CAMPO SE TIVER
 
         if (donoEstacionamento == '' || nomeEstacionamento == '') {
             document.getElementById('msgForm').textContent = 'Preencha o dono e o nome do estacionamento.';
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             complementoEstacionamento,
             cidadeEstacionamento,
             estadoEstacionamento
+            // NOVO CAMPO SE TIVER
         };
 
         var estacionamentos = JSON.parse(localStorage.getItem('estacionamentos'));
@@ -98,6 +100,7 @@ function carregaRegistros() {
             <div class="tag">${e.logradouroEstacionamento || 'S/ logradouro'}, ${e.numeroEstacionamento || 'S/N'}</div>
             <div class="tag">${e.bairroEstacionamento || '—'} — ${e.cidadeEstacionamento}/${e.estadoEstacionamento}</div>
             ${e.complementoEstacionamento ? `<div class="tag">Compl: <span>${e.complementoEstacionamento}</span></div>` : ''}
+            <!-- NOVO CAMPO SE TIVER -->
         </div>
         </div>`;
     }
@@ -128,6 +131,7 @@ function executaAcao(acao, indice, url) {
         document.getElementById('complementoEstacionamento').value    = obj.complementoEstacionamento;
         document.getElementById('cidadeEstacionamento').value         = obj.cidadeEstacionamento;
         document.getElementById('estadoEstacionamento').value         = obj.estadoEstacionamento;
+        // NOVO CAMPO SE TIVER
 
         document.getElementById('btnAdicionar').disabled = true;
         document.getElementById('btnSalvar').style.display = 'block';
@@ -144,6 +148,7 @@ function executaAcao(acao, indice, url) {
             estacionamentos[indice].complementoEstacionamento    = document.getElementById('complementoEstacionamento').value;
             estacionamentos[indice].cidadeEstacionamento         = document.getElementById('cidadeEstacionamento').value;
             estacionamentos[indice].estadoEstacionamento         = document.getElementById('estadoEstacionamento').value;
+            // NOVO CAMPO SE TIVER
             localStorage.setItem('estacionamentos', JSON.stringify(estacionamentos));
             window.location.href = url;
         });
