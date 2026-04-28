@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 estacionamento_pertencente
             }
 
-            adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero)
+            adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero, estacionamento_pertencente)
 
             // Adiciona o obj na lista e salva no localstorage
             listaInformacoesVagas.push(objVagas)
@@ -50,7 +50,7 @@ function verificarLista() {
     }
 }
 // Função para adicionar a vaga na tela, recebe os parâmetros do objVagas
-function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero) {
+function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero, estacionamento_pertencente) {
     const lista = document.getElementById('listaVagas');
     let item = ` 
         <li id="vagas-${vagaNumero}">
@@ -107,7 +107,7 @@ function alterarVagas(vagaNumero) {
         const item = document.getElementById(`vagas-${vagaNumero}`);
         if (item) {
             item.innerHTML = `
-                Estacionamento: ${lista[indice].nomeEstacionamento} | IdCarro: ${lista[indice].idCarro} | Sensor: ${lista[indice].vagaSensor} | Vaga : ${lista[indice].vagaNumero}
+                Estacionamento: ${lista[indice].nomeEstacionamento} | IdCarro: ${lista[indice].idCarro} | Sensor: ${lista[indice].vagaSensor} | Vaga : ${lista[indice].vagaNumero} | Estacionamento Pertencente: ${lista[indice].estacionamento_pertencente}
                 <button onclick="excluirVaga('${vagaNumero}')" class="btn-excluir">Excluir</button>
                 <button onclick="alterarVagas('${vagaNumero}')" class="btn-alterar">Alterar</button>`;
         }
@@ -117,6 +117,7 @@ function alterarVagas(vagaNumero) {
         document.getElementById('vagaCarro').value = "";
         document.getElementById('vagaSensor').value = "";
         document.getElementById('vagaNumero').value = "";
+        document.getElementById('estacionamento-pertencente').value = "";
 
         // Reseta os botões
         document.getElementById('btnSalvar').style.display = 'none';
@@ -134,7 +135,7 @@ function carregarEstacionamentosNoSelect() {
 
     estacionamentos.forEach(e => {
         const option = document.createElement('option');
-        option.value = e.nomeEstacionamento; // mantém compatível com seu sistema
+        option.value = e.nomeEstacionamento; 
         option.textContent = e.nomeEstacionamento;
         select.appendChild(option);
     });
