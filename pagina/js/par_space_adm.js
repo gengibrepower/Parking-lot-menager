@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     })
-    // Verifica se a lista existe no localStorage, se não existir, cria uma lista vazia
+// Verifica se a lista existe no localStorage, se não existir, cria uma lista vazia
 function verificarLista() {
     const lista = localStorage.getItem('vagas')
     if (lista == null) {
@@ -52,6 +52,7 @@ function verificarLista() {
 // Função para adicionar a vaga na tela, recebe os parâmetros do objVagas
 function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero, estacionamento_pertencente) {
     const lista = document.getElementById('listaVagas');
+    // Cria um item de lista com as informações da vaga e os botões de excluir e alterar, o id do item é "vagas-" seguido do número da vaga para facilitar a exclusão e alteração
     let item = ` 
         <li id="vagas-${vagaNumero}">
             ${nomeEstacionamento} | Carro: ${idCarro} | Sensor: ${vagaSensor} | Número: ${vagaNumero}  | Estacionamento: ${estacionamento_pertencente}
@@ -64,7 +65,7 @@ function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero, esta
 function excluirVaga(vagaNumero) {
     if (!confirm(`Deseja excluir a vaga com Número ${vagaNumero}?`)) return;
 
-
+    // Remove do localStorage
     let lista = JSON.parse(localStorage.getItem('vagas')) || [];
     lista = lista.filter(vagas => vagas.vagaNumero !== vagaNumero);
     localStorage.setItem('vagas', JSON.stringify(lista));
@@ -126,13 +127,15 @@ function alterarVagas(vagaNumero) {
 }
 
 function carregarEstacionamentosNoSelect() {
+    // Pega a lista de estacionamentos do localStorage, se não tiver nada, cria um array vazio
     const estacionamentos = JSON.parse(localStorage.getItem('estacionamentos')) || [];
-
+    // Pega o select do HTML
     const select = document.getElementById('estacionamento-pertencente');
 
     // limpa pra não duplicar
     select.innerHTML = '<option value="">Selecione o estacionamento</option>';
-
+    
+    // Adiciona os estacionamentos no select
     estacionamentos.forEach(e => {
         const option = document.createElement('option');
         option.value = e.nomeEstacionamento; 
