@@ -710,6 +710,11 @@ table tbody tr:hover {
     color: #ffffff;
 }
 
+#estacionamento-pertencente option {
+    background-color: #111;
+    color: white;
+}
+
 
 /* Responsiveness */
 

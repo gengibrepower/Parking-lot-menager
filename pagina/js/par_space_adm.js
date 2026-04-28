@@ -1,44 +1,48 @@
 /* ---------PROVA---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
-    verificarLista(); // verifica se a lista existe
-    /*
-    Dicas para prova
-    -Pegar o Id do html e trazer ele para dentro do evento adcionar vaga, usando document.getElementById
-    -Não esquecer de colocar o .value no final da "const" nova para pegar os valores dos inputs
-    */ 
-    document.getElementById('btnAdicionarVaga').addEventListener('click', () => {
+        verificarLista(); // verifica se a lista existe
 
-        // colocar a nova "const" aqui V
-        const nomeEstacionamento = document.getElementById('vagaEstacionamento').value
-        const idCarro = document.getElementById('vagaCarro').value
-        const vagaSensor = document.getElementById('vagaSensor').value
-        const vagaNumero = document.getElementById('vagaNumero').value
-       
-        
-        // Usa parse para pegar a lista do localStorage para que seja um array e não string, se não tiver nada no localstorage, ele cria um array vazio
-        let listaInformacoesVagas = JSON.parse(localStorage.getItem('vagas')) || []
+        carregarEstacionamentosNoSelect();
+        /*
+        Dicas para prova
+        -Pegar o Id do html e trazer ele para dentro do evento adcionar vaga, usando document.getElementById
+        -Não esquecer de colocar o .value no final da "const" nova para pegar os valores dos inputs
+        */
+        document.getElementById('btnAdicionarVaga').addEventListener('click', () => {
 
-        // Colocar o obj com as novas informações aqui V
-        let objVagas = {
-            nomeEstacionamento,
-            idCarro,
-            vagaSensor,
-            vagaNumero
-        }
+            // colocar a nova "const" aqui V
+            const nomeEstacionamento = document.getElementById('vagaEstacionamento').value
+            const idCarro = document.getElementById('vagaCarro').value
+            const vagaSensor = document.getElementById('vagaSensor').value
+            const vagaNumero = document.getElementById('vagaNumero').value
+            const estacionamento_pertencente = document.getElementById('estacionamento-pertencente').value
 
-        adicionarHTML(nomeEstacionamento,idCarro,vagaSensor,vagaNumero)
 
-        // Adiciona o obj na lista e salva no localstorage
-        listaInformacoesVagas.push(objVagas)
-        localStorage.setItem('vagas', JSON.stringify(listaInformacoesVagas))
+            // Usa parse para pegar a lista do localStorage para que seja um array e não string, se não tiver nada no localstorage, ele cria um array vazio
+            let listaInformacoesVagas = JSON.parse(localStorage.getItem('vagas')) || []
 
-        
+            // Colocar o obj com as novas informações aqui V
+            let objVagas = {
+                nomeEstacionamento,
+                idCarro,
+                vagaSensor,
+                vagaNumero,
+                estacionamento_pertencente
+            }
+
+            adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero)
+
+            // Adiciona o obj na lista e salva no localstorage
+            listaInformacoesVagas.push(objVagas)
+            localStorage.setItem('vagas', JSON.stringify(listaInformacoesVagas))
+
+
+        })
+
+
     })
- 
-
-})
-// Verifica se a lista existe no localStorage, se não existir, cria uma lista vazia
+    // Verifica se a lista existe no localStorage, se não existir, cria uma lista vazia
 function verificarLista() {
     const lista = localStorage.getItem('vagas')
     if (lista == null) {
@@ -48,9 +52,9 @@ function verificarLista() {
 // Função para adicionar a vaga na tela, recebe os parâmetros do objVagas
 function adicionarHTML(nomeEstacionamento, idCarro, vagaSensor, vagaNumero) {
     const lista = document.getElementById('listaVagas');
-    let item =` 
+    let item = ` 
         <li id="vagas-${vagaNumero}">
-            ${nomeEstacionamento} | Carro: ${idCarro} | Sensor: ${vagaSensor} | Número: ${vagaNumero} 
+            ${nomeEstacionamento} | Carro: ${idCarro} | Sensor: ${vagaSensor} | Número: ${vagaNumero}  | Estacionamento: ${estacionamento_pertencente}
             <button onclick="excluirVaga('${vagaNumero}')">Excluir</button>
             <button onclick="alterarVagas('${vagaNumero}')">Alterar</button>
         </li>`;
@@ -83,6 +87,7 @@ function alterarVagas(vagaNumero) {
     document.getElementById('vagaCarro').value = obj.idCarro;
     document.getElementById('vagaSensor').value = obj.vagaSensor;
     document.getElementById('vagaNumero').value = obj.vagaNumero;
+    document.getElementById('estacionamento-pertencente').value = obj.estacionamento_pertencente;
 
     // Desabilita o botão adicionar e mostra o salvar
     document.getElementById('btnAdicionarVaga').disabled = true;
@@ -90,10 +95,11 @@ function alterarVagas(vagaNumero) {
 
     // Escuta o botão salvar
     document.getElementById('btnSalvar').onclick = () => {
-        lista[indice].nomeEstacionamento   = document.getElementById('vagaEstacionamento').value;
-        lista[indice].idCarro  = document.getElementById('vagaCarro').value;
-        lista[indice].vagaSensor  = document.getElementById('vagaSensor').value;
+        lista[indice].nomeEstacionamento = document.getElementById('vagaEstacionamento').value;
+        lista[indice].idCarro = document.getElementById('vagaCarro').value;
+        lista[indice].vagaSensor = document.getElementById('vagaSensor').value;
         lista[indice].vagaNumero = document.getElementById('vagaNumero').value;
+        lista[indice].estacionamento_pertencente = document.getElementById('estacionamento-pertencente').value;
 
         localStorage.setItem('vagas', JSON.stringify(lista));
 
@@ -116,6 +122,22 @@ function alterarVagas(vagaNumero) {
         document.getElementById('btnSalvar').style.display = 'none';
         document.getElementById('btnAdicionarVaga').disabled = false;
     }
+}
+
+function carregarEstacionamentosNoSelect() {
+    const estacionamentos = JSON.parse(localStorage.getItem('estacionamentos')) || [];
+
+    const select = document.getElementById('estacionamento-pertencente');
+
+    // limpa pra não duplicar
+    select.innerHTML = '<option value="">Selecione o estacionamento</option>';
+
+    estacionamentos.forEach(e => {
+        const option = document.createElement('option');
+        option.value = e.nomeEstacionamento; // mantém compatível com seu sistema
+        option.textContent = e.nomeEstacionamento;
+        select.appendChild(option);
+    });
 }
 
 
@@ -171,4 +193,3 @@ if (menuBtn && drawer) {
 }
 
 /*ativo*/
-
