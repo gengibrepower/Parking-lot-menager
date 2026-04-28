@@ -22,9 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const placa = document.getElementById("placa").value.trim();
         const proprietario = document.getElementById("proprietario").value;
         const marca = document.getElementById("marca").value.trim();
-        const cor = document.getElementById("cor").value.trim();
  
-        if (placa === "" || proprietario === "" || marca === "" || cor === "") {
+        if (placa === "" || proprietario === "" || marca === "") {
             document.getElementById("msgFormCarro").textContent = "Preencha placa, proprietário, marca e cor.";
             return;
         }
@@ -43,8 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const obj = {
             placa: placa,
             proprietario: proprietario,
-            marca: marca,
-            cor: cor
+            marca: marca
 
         };
  
@@ -105,7 +103,6 @@ function carregaRegistrosCarros() {
                           <tr>
                               <th><i class="fa-solid fa-hashtag me-1"></i> Placa</th>
                               <th>Marca</th>
-                              <th>Cor</th>
                               <th>Proprietário</th>
                               <th>Ações</th>
                           </tr>
@@ -120,7 +117,6 @@ function carregaRegistrosCarros() {
         return `<tr>
                     <td><strong>${item.placa}</strong></td>
                     <td>${item.marca}</td>
-                    <td>${item.cor}</td>
                     <td>${item.proprietario}</td>
                     <td>
                         <a href='cars_adm.html?id=${index}&acao=alterar' class="btn btn-outline-primary btn-sm me-1">
@@ -158,7 +154,6 @@ function executaAcaoCarro(acao, indice, url) {
         const obj = carros[indice];
         document.getElementById("placa").value = obj.placa;
         document.getElementById("marca").value = obj.marca;
-        document.getElementById("cor").value = obj.cor;
  
         // Aguarda o select ser populado para depois setar o valor
         carregaProprietarios();
@@ -183,7 +178,6 @@ function executaAcaoCarro(acao, indice, url) {
             carros[indice].placa = document.getElementById("placa").value.trim();
             carros[indice].proprietario = document.getElementById("proprietario").value;
             carros[indice].marca = document.getElementById("marca").value.trim();
-            carros[indice].cor = document.getElementById("cor").value.trim();
             localStorage.setItem("carros", JSON.stringify(carros));
             window.location.href = url;
         });
