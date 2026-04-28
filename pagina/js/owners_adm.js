@@ -5,7 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // Verifica se existe usuário logado
-    verificaSessao();
+    // verificaSessao();
 
     // Garante que existe a lista de donos no localStorage
     verificaDonos();
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Pega dados da URL 
     const parametros = new URLSearchParams(window.location.search);
     const acao = parametros.get("acao"); // tipo da ação
-    const id = parametros.get("id");     // índice do dono
+    const id = parametros.get("id"); // índice do dono
 
     // Pega a URL limpa  (sem parâmetros)
     const url = window.location.origin + window.location.pathname;
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cnpj = document.getElementById("cnpj").value;
         const email = document.getElementById("emailDono").value;
         const status = document.getElementById("status_dono").value;
-        
+
 
         // Validação simples , verifica se os campos estão preenchidos  passo 3
         if (razao === "" || cnpj === "" || email === "") {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cnpj: cnpj,
             email: email,
             status: status
-            
+
         };
 
         // Pega lista de donos do localStorage
@@ -161,7 +161,7 @@ function executaAcao(acao, indice, url) {
         window.location.href = url; // recarrega página
 
 
-    //  EDITAR
+        //  EDITAR
     } else if (acao === "alterar") {
 
         const dono = donos[indice];
